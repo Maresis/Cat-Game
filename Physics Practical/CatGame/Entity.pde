@@ -21,7 +21,7 @@ class Entity{
 
     public Entity(){
         forceRegistry = new ForceRegistry();
-
+        particles = new ArrayList<Particle>();
     }
 
     public void draw(){

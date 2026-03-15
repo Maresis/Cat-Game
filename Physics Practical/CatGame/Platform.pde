@@ -10,12 +10,12 @@ class Platform extends Tile{
         this.collidable = Boolean.TRUE;
     }
 
-    public void draw(float offsetX, float offsetY){
+    public void draw(float posX, float posY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
         //red
         fill(255, 0, 0);
-        rect(this.posX + offsetX, this.posY + offsetY, TILE_LENGTH, TILE_LENGTH);
+        rect(posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 
 }

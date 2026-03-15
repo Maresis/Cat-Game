@@ -20,8 +20,14 @@ final int PLAYER_MOVE_PROPORTION = tileLength;
 ArrayList<Level> levels = new ArrayList<Level>();
 int currentLevel = 0; //default value
 
-//this techincally work like a cameria but we are keeping track of an x and y offset
-//default = to starting position
+//starting position will always be the same
+final int startPosX = screenWidth/2;
+final int startPosY = screenHeight/2;
+
+float tilePosX;
+float tilePosY;
+
+//offset will always be calculated Tile position - start
 float offsetX;
 float offsetY;
 
@@ -40,11 +46,14 @@ void setup(){
     tileMap = new TileMap(levels.get(currentLevel).levelFile, tileLengthRange, tileHeightRange);
     //create player
     // public Player(int posX, int posY, int moveIncrement){
-    player = new Player(levels.get(currentLevel).startPosX, levels.get(currentLevel).startPosY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player = new Player(startPosX, startPosY, levels.get(currentLevel).startPosX, levels.get(currentLevel).startPosY, screenWidth/PLAYER_MOVE_PROPORTION);
 
     //set offset
-    offsetX = player.offsetX;
-    offsetY = player.offsetY;
+    tilePosX = player.tilePosX;
+    tilePosY = player.tilePosY;
+
+    offsetX = tilePosX - startPosX;
+    offsetY = tilePosY - startPosY;
 
 }
 
@@ -53,16 +62,21 @@ void draw(){
     //first background
     background(255);
 
+    println(tilePosX);
+
     //calculate offset of the player character
     //this fuction essentially figures out the new offset based on the physics applied to the player and the movement by the user
     player.calculateOffset();
 
-    //set offset
-    offsetX = player.offsetX;
-    offsetY = player.offsetY;
+    tilePosX = player.tilePosX;
+    tilePosY = player.tilePosY;
+
+    offsetX = player.tilePosX - startPosX;
+    offsetY = player.tilePosY - startPosY;
+    
 
     //draw tilemap before anything else
-    tileMap.draw(offsetX, offsetY);
+    tileMap.draw(offsetX, offsetY, tilePosX, tilePosY);
 
     //draw player character
     player.draw();
@@ -84,10 +98,10 @@ void draw(){
 void keyPressed(){
     switch(key){
         case 'a':
-            player.setMoving(key);
+            player.setMoving(key, true);
             break;
         case 'd':
-            player.setMoving(key);
+            player.setMoving(key, true);
             break;
         case ' ':
             // player.startJump();
@@ -109,10 +123,10 @@ void keyPressed(){
 void keyReleased(){
     switch(key){
         case 'a':
-            player.move(key);
+            player.setMoving(key, false);
             break;
         case 'd':
-            player.move(key);
+            player.setMoving(key, false);
             break;
         case CODED:
             if(keyCode == SHIFT ){

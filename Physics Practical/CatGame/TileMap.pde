@@ -23,9 +23,11 @@ class TileMap {
     */
     public TileMap(String filePath, int lengthRange, int heightRange){
         try {
-            Scanner sc = new Scanner(filePath);
+            // have to use sketch path sense the levels are in the sketch folder, not the data folder
+            Scanner sc = new Scanner(new File (sketchPath(filePath)));
             // the height and length of the map will be the first two Ints
             // check if next Int exists
+            // print(sc.next());
             if(sc.hasNextInt()){
                 this.length = sc.nextInt();
             }
@@ -92,7 +94,9 @@ class TileMap {
                         break;
                     default:
                         throw new Exception("Tried to create invalid Tile type. Check that Tile is in Range. Coordinate: (" + length + "," + height +")");
+                    
                 }
+                length++;
             }
 
             sc.close();
@@ -108,23 +112,36 @@ class TileMap {
     }
 
     
-    public void draw(float offsetX, float offsetY){
+    public void draw(float offsetX, float offsetY, float tileX, float tileY){
         //this function is pretty simple, if the tiles are in the range of the current offset then they get drawn
         //lets define the range
         // with the character in the center the range of "sight" should be 5 tiles tall and 6 tiles wide
 
+        println(tileX);
         // the length range will be the x offset / tileLength rounded down on the low end this x offset / tileLength + (tileLength * length) rounded up on the high end
-        int lowXRange = floor(offsetX/Tile.TILE_LENGTH);
-        int highXRange = ceil(offsetX/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * lengthRange));
+        int lowXRange = floor(tileX/Tile.TILE_LENGTH) - (lengthRange/2);
+        int highXRange = ceil(tileX/Tile.TILE_LENGTH + (lengthRange/2));
 
         // Height is defined similarly
-        int lowYRange = floor(offsetY/Tile.TILE_LENGTH);
-        int highYRange = ceil(offsetY/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * heightRange));
+        // these can accidentally round above or below limit make sure they dont
+        println(tileY);
+        int lowYRange = floor((tileY/Tile.TILE_LENGTH) - (heightRange/2));
+        int highYRange = ceil((tileY/Tile.TILE_LENGTH) + (heightRange/2));
 
-        //now draw the tile in the tile map in this range
-        for(int height = lowYRange; height <= highYRange; height++){
-            for(int length = lowXRange; length <= highXRange; height++){
-                tileMap[length][height].draw(offsetX, offsetY);
+        if(lowXRange < 0) lowXRange = 0;
+        if(lowYRange < 0) lowYRange = 0;
+        if(highXRange > length) highXRange = length;
+        if(highYRange > height) highYRange = height;
+
+        println("X [" + lowXRange + "," + highXRange + "  Y [" + lowYRange + "," + highYRange );
+        println("Offset x y "+ offsetX, offsetY);
+
+        
+        for(int i = lowYRange; i < highYRange; i++){
+            for(int j = lowXRange; j < highXRange; j++){
+                //do math for position of tiles
+
+                tileMap[j][i].draw(j * Tile.TILE_LENGTH - offsetX, i * Tile.TILE_LENGTH - offsetY);
             }
         }
 

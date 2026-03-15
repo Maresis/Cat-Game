@@ -22,6 +22,7 @@ class Cat{
         for(Particle p: particles){
             vertex(p.position.x, p.position.y);
         }
+        endShape(CLOSE);
 
     }
 

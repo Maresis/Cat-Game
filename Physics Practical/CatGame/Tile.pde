@@ -18,10 +18,11 @@
         this.posY = posY;
     }
 
-    public void draw(float offsetX, float offsetY){
+    //lets completely disregard the position of the tile. That is just for finding what tiles to print
+    public void draw(float posX, float posY){
         // tiles by default are White
         fill(255);
-        rect(this.posX + offsetX, this.posY + offsetY, TILE_LENGTH, TILE_LENGTH);
+        rect(posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 
     // take a nonstatic entity as input and checks if it is in the static tile

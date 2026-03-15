@@ -35,8 +35,8 @@ class Player extends Entity{
 
     //offset that the position of the world is based off of
     //public to make it "snappy" lol
-    public float offsetX;
-    public float offsetY;
+    public float tilePosX;
+    public float tilePosY;
 
     boolean movingRight = false;
     boolean movingLeft = false;
@@ -47,7 +47,7 @@ class Player extends Entity{
     /*
         Creates and draws player. On
     */
-    public Player(int posX, int posY, int moveIncrement){
+    public Player(int screenPosX, int ScreenPosY, int tilePosX, int tilePosY, int moveIncrement){
         // entity constructor. Creates particle array, force generator etc.
         super();
 
@@ -57,16 +57,16 @@ class Player extends Entity{
         this.moveIncrement = moveIncrement;
 
         // offset = position
-        this.offsetX = posX;
-        this.offsetY = posY;
+        this.tilePosX = tilePosX;
+        this.tilePosY = tilePosY;
 
         //create particles
         // Particle(int x, int y, float xVel, float yVel, float invM
         // create 4 particles for hit box
-        particles.add(new Particle(posX, posY, 0, 0, invMass));
-        particles.add(new Particle(posX + width, posY, 0, 0, invMass));
-        particles.add(new Particle(posX, posY + height, 0, 0, invMass));
-        particles.add(new Particle(posX + width, posY + height, 0, 0, invMass));
+        particles.add(new Particle(screenPosX, ScreenPosY, 0, 0, invMass));
+        particles.add(new Particle(screenPosX + width, ScreenPosY, 0, 0, invMass));
+        particles.add(new Particle(screenPosX, ScreenPosY + height, 0, 0, invMass));
+        particles.add(new Particle(screenPosX + width, ScreenPosY + height, 0, 0, invMass));
 
         //create cats <3
         cats = new ArrayList<Cat>();
@@ -83,7 +83,8 @@ class Player extends Entity{
 
     public void calculateOffset(){
 
-        //handle moving options
+        //handle moving 
+        println("Moving data d a w" + movingRight + " " + movingLeft + " " + climbing);
         if(movingRight){
             move('d');
         }
@@ -102,15 +103,17 @@ class Player extends Entity{
         }
         //the final vector should be the bottom right corner. We'll base it on the top left
         //calculate offset
-        float offsetX = offset.x - (Tile.TILE_LENGTH);
+        // where it moved from start pos
+        float newPosX = offset.x - (Tile.TILE_LENGTH);
 
-        float offsetY = offset.y - (Tile.TILE_LENGTH);
+        float newPosY = offset.y - (Tile.TILE_LENGTH);
 
         //probably run collision detection here before actually finalizing drawing
         //adjust offsets accordingly
-
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+        
+        //the new tile position is this new position - the starting position + the tileposition
+        this.tilePosX += (newPosX - startPosX);
+        this.tilePosY += (newPosY - startPosY);
 
     }
 
@@ -121,15 +124,15 @@ class Player extends Entity{
 
 
 
-    public void setMoving(char key){
+    public void setMoving(char key, boolean keyPressed){
         //this literally just flips the boolean value of the moving function
         if( key == 'a'){
             //move left -> offsetX is affected in negative direction
-            movingLeft = !movingLeft;
+            movingLeft = keyPressed;
         }
         else if (key == 'd'){
             //move right -> offsetX is affected in positive direction
-            movingRight = !movingRight;
+            movingRight = keyPressed;
         }
         else
             println("How tf did you get here?");
@@ -141,14 +144,14 @@ class Player extends Entity{
         // used Space invaders as inspiration for moving character 
         if( key == 'a'){
             //move left -> offsetX is affected in negative direction
-            offsetX -= moveIncrement;
+            this.tilePosX -= moveIncrement;
         }
         else if (key == 'd'){
             //move right -> offsetX is affected in positive direction
-            offsetX += moveIncrement;
+            this.tilePosX += moveIncrement;
         }
         else if(key == 'w'){ // up for climb
-            offsetY -= moveIncrement;
+            this.tilePosY -= moveIncrement;
         }
         else
             println("How tf did you get here?");
