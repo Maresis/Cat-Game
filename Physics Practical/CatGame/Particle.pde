@@ -1,3 +1,4 @@
+// taken from lecture materials on physics
 // a representation of a point mass
 final class Particle {
   

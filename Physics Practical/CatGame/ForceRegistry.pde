@@ -1,5 +1,5 @@
 import java.util.Iterator ;
-
+// taken from lecture content on physics engines
 /**
  * Holds all the force generators and the particles they apply to
  */
