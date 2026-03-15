@@ -62,8 +62,8 @@ class TileMap {
                 type = sc.nextInt();
 
                 // math for tile position
-                posX = Tile.tileLength * length;
-                posY = Tile.tileLength * height;
+                posX = Tile.TILE_LENGTH * length;
+                posY = Tile.TILE_LENGTH * height;
                 switch(type){
                     case 0:
                         //create Air tile 
@@ -108,12 +108,12 @@ class TileMap {
         // with the character in the center the range of "sight" should be 5 tiles tall and 6 tiles wide
 
         // the length range will be the x offset / tileLength rounded down on the low end this x offset / tileLength + (tileLength * length) rounded up on the high end
-        int lowXRange = floor(offsetX/Tile.tileLength);
-        int highXRange = ceil(offsetX/Tile.tileLength + (Tile.tileLength * LENGTH_RANGE));
+        int lowXRange = floor(offsetX/Tile.TILE_LENGTH);
+        int highXRange = ceil(offsetX/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * LENGTH_RANGE));
 
         // Height is defined similarly
-        int lowYRange = floor(offsetY/Tile.tileLength);
-        int highYRange = ceil(offsetY/Tile.tileLength + (Tile.tileLength * HEIGHT_RANGE));
+        int lowYRange = floor(offsetY/Tile.TILE_LENGTH);
+        int highYRange = ceil(offsetY/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * HEIGHT_RANGE));
 
         //now draw the tile in the tile map in this range
         for(int height = lowYRange; height <= highYRange; height++){

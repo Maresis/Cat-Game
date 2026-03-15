@@ -1,13 +1,13 @@
 
 
 class Platform extends Tile{
-    private final Boolean collidable = Boolean.TRUE;
-    private float posX;
-    private float posY;
+    // private final Boolean collidable = Boolean.TRUE;
+    // private float posX;
+    // private float posY;
 
     public Platform(float posX, float posY){
-        this.posX = posX;
-        this.posY = posY;
+        super(posX, posY);
+        this.collidable = Boolean.TRUE;
     }
 
     public void draw(float offsetX, float offsetY){
@@ -15,7 +15,7 @@ class Platform extends Tile{
         // basic drawing, will replace with assets later
         //red
         fill(255, 0, 0);
-        rect(this.posX + offsetX, this.posY + offsetY, Tile.tileLength, Tile.tileLength);
+        rect(this.posX + offsetX, this.posY + offsetY, TILE_LENGTH, TILE_LENGTH);
     }
 
 }

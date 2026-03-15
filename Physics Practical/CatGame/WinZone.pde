@@ -1,20 +1,17 @@
 
 
 class WinZone extends Tile {
-    private final Boolean collidable = Boolean.TRUE;
-    private float posX;
-    private float posY;
 
     public WinZone(float posX, float posY){
-        this.posX = posX;
-        this.posY = posY;
+        super(posX, posY);
+        this.collidable = Boolean.TRUE;
     }
 
     public void draw(float offsetX, float offsetY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
-        //red
-        fill(255, 0, 0);
-        rect(this.posX + offsetX, this.posY + offsetY, Tile.tileLength, Tile.tileLength);
+        //green
+        fill(0 , 255, 0);
+        rect(posX + offsetX, posY + offsetY, TILE_LENGTH, TILE_LENGTH);
     }
 }

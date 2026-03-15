@@ -1,13 +1,13 @@
 
 
 class ClimbablePlatform extends Tile{
-    private final Boolean collidable = Boolean.TRUE;
-    private float posX;
-    private float posY;
+    // private final Boolean collidable = Boolean.TRUE;
+    // private float posX;
+    // private float posY;
 
     public ClimbablePlatform(float posX, float posY){
-        this.posX = posX;
-        this.posY = posY;
+        super(posX, posY);
+        this.collidable = Boolean.TRUE;
     }
 
     public void draw(float offsetX, float offsetY){

@@ -49,6 +49,7 @@ class ForceRegistry {
    *  corresponding particles.
    */
   void updateForces() {
+    // honestly, not uderstanding why you wouldn't use a for each loop but alright
     Iterator<ForceRegistration> itr = registrations.iterator() ;
     while(itr.hasNext()) {
       ForceRegistration fr = itr.next() ;
