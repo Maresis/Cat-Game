@@ -24,17 +24,17 @@ class TileMap {
             // the height and length of the map will be the first two Ints
             // check if next Int exists
             if(sc.hasNextInt()){
-                this.height = sc.nextInt();
+                this.length = sc.nextInt();
             }
             else {
                 throw new Exception("No Integers Found in Level File for Generation.");
             }
 
             if(sc.hasNextInt()){
-                this.length = sc.nextInt();
+                this.height = sc.nextInt();
             }
             else {
-                throw new Exception("Insufficent Integers in Level File to Define Length.");
+                throw new Exception("Insufficent Integers in Level File to Define Height.");
             }
             // finish constructing tileMap matrix with dimensions
             this.tileMap = new Tile[this.length][this.height];
@@ -99,8 +99,28 @@ class TileMap {
         }
     }
 
+    
+    private final int LENGTH_RANGE = 6;
+    private final int HEIGHT_RANGE = 5;
     public void draw(float offsetX, float offsetY){
         //this function is pretty simple, if the tiles are in the range of the current offset then they get drawn
+        //lets define the range
+        // with the character in the center the range of "sight" should be 5 tiles tall and 6 tiles wide
+
+        // the length range will be the x offset / tileLength rounded down on the low end this x offset / tileLength + (tileLength * length) rounded up on the high end
+        int lowXRange = floor(offsetX/Tile.tileLength);
+        int highXRange = ceil(offsetX/Tile.tileLength + (Tile.tileLength * LENGTH_RANGE));
+
+        // Height is defined similarly
+        int lowYRange = floor(offsetY/Tile.tileLength);
+        int highYRange = ceil(offsetY/Tile.tileLength + (Tile.tileLength * HEIGHT_RANGE));
+
+        //now draw the tile in the tile map in this range
+        for(int height = lowYRange; height <= highYRange; height++){
+            for(int length = lowXRange; length <= highXRange; height++){
+                tileMap[length][height].draw(offsetX, offsetY);
+            }
+        }
 
     }
 
