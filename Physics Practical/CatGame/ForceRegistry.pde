@@ -48,6 +48,7 @@ class ForceRegistry {
    * Calls all force generators to update the forces of their
    *  corresponding particles.
    */
+   
   void updateForces() {
     Iterator<ForceRegistration> itr = registrations.iterator() ;
     while(itr.hasNext()) {

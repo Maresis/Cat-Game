@@ -7,6 +7,9 @@ class TileMap {
     private int height;
     private int length;
 
+    private int lengthRange = 6;
+    private int heightRange = 5;
+
     /*
         So there are a few different Tile types for when the tilemap is generated from a text file.
         Each tile is represented as an Int of some variety parsed by a space.
@@ -18,7 +21,7 @@ class TileMap {
         4 : Entity Spawn ~ no collide -- accompanied by second number 0 : player, 1 : water bullet, 2 : catnip rays
         5 : Player Win ~ collide
     */
-    TileMap(String filePath){
+    public TileMap(String filePath, int lengthRange, int heightRange){
         try {
             Scanner sc = new Scanner(filePath);
             // the height and length of the map will be the first two Ints
@@ -97,11 +100,14 @@ class TileMap {
         catch (Exception e){
             println(e.getMessage());
         }
+
+        //set height and length range
+        this.lengthRange = lengthRange;
+        this.heightRange = heightRange;
+
     }
 
     
-    private final int LENGTH_RANGE = 6;
-    private final int HEIGHT_RANGE = 5;
     public void draw(float offsetX, float offsetY){
         //this function is pretty simple, if the tiles are in the range of the current offset then they get drawn
         //lets define the range
@@ -109,11 +115,11 @@ class TileMap {
 
         // the length range will be the x offset / tileLength rounded down on the low end this x offset / tileLength + (tileLength * length) rounded up on the high end
         int lowXRange = floor(offsetX/Tile.TILE_LENGTH);
-        int highXRange = ceil(offsetX/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * LENGTH_RANGE));
+        int highXRange = ceil(offsetX/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * lengthRange));
 
         // Height is defined similarly
         int lowYRange = floor(offsetY/Tile.TILE_LENGTH);
-        int highYRange = ceil(offsetY/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * HEIGHT_RANGE));
+        int highYRange = ceil(offsetY/Tile.TILE_LENGTH + (Tile.TILE_LENGTH * heightRange));
 
         //now draw the tile in the tile map in this range
         for(int height = lowYRange; height <= highYRange; height++){

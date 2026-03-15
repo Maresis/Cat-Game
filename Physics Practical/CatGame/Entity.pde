@@ -6,29 +6,32 @@ import java.util.Arrays;
 class Entity{
     // Particle array to represent the particles that make up an Entity
     // all entities have hit boxes. If these hit boxes collide with something do something
-    private ArrayList<Particle> particles;
+    protected ArrayList<Particle> particles;
 
-    private ForceRegistry forceRegistry;
+    protected ForceRegistry forceRegistry;
 
     // different between entities
     // might be redundant but we will keep for now
-    protected float moveIncrement;
+    protected int moveIncrement;
+
+    protected float invMass;
 
     //just to track entities affects. If a player entity and a hostile entity collide the player dies.
     protected Boolean hostile = Boolean.FALSE;
 
     public Entity(){
-        ForceRegistry = new ForceRegistry();
+        forceRegistry = new ForceRegistry();
 
     }
 
     public void draw(){
         //by deafult entities will just be represented by a shape of thier particles position
+        fill(0);
         beginShape();
             for(Particle p: particles){
-                particle.integrate();
+                p.integrate();
                 // position is a PVector in particle
-                vertex(particle.position.x, particle.position.y);
+                vertex(p.position.x, p.position.y);
             }
         endShape(CLOSE);
 
@@ -39,13 +42,13 @@ class Entity{
     }
 
     public void clearForces(){
-        ForceRegistry.clear();
+        forceRegistry.clear();
     }
 
     public void addForce(ForceGenerator fg){
         for(Particle p: particles){
             // add force to particle
-            ForceRegistry.add(p, fg);
+            forceRegistry.add(p, fg);
         }
     }
 

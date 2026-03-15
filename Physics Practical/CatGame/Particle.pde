@@ -19,7 +19,7 @@ final class Particle {
   // If you do need the mass, here it is:
   public float getMass() {return 1/invMass ;}
   
-  Particle(int x, int y, float xVel, float yVel, float invM) {
+  public Particle(int x, int y, float xVel, float yVel, float invM) {
     position = new PVector(x, y) ;
     velocity = new PVector(xVel, yVel) ;
     forceAccumulator = new PVector(0, 0) ;
@@ -29,6 +29,11 @@ final class Particle {
   // Add a force to the accumulator
   void addForce(PVector force) {
     forceAccumulator.add(force) ;
+  }
+
+  // change invMass. Used to make Poe immovable while using special ability.
+  void setInvMass(float invMass){
+    this.invMass = invMass;
   }
   
   // update position and velocity
@@ -87,5 +92,29 @@ final class Particle {
     // Clear accumulator
     forceAccumulator.x = 0 ;
     forceAccumulator.y = 0 ;    
+  }
+
+  // we have to integrate the player differently since they never actually move on the screen
+  public PVector playerIntegrate(){
+
+    // If infinite mass, we don't integrate
+    if (invMass <= 0f) return position; //return positions so offset will be the same
+    
+    PVector offset = new PVector(position.x, position.y); // close position Pvector so we can add velocity to it without changing the position
+    // update position
+    offset.add(velocity) ;
+    
+    // NB If you have a constant acceleration (e.g. gravity) start with
+    //    that then add the accumulated force / mass to that.
+    PVector resultingAcceleration = forceAccumulator.get() ;
+    resultingAcceleration.mult(invMass) ;
+    
+    // update velocity
+    velocity.add(resultingAcceleration) ;
+    // apply damping - disabled when Drag force present
+    // velocity.mult(DAMPING) ;
+
+    //so basically we return offset because using this we can calculate the offset based on the set position of the Particles
+    return offset;
   }
 }

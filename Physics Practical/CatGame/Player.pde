@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*
     There are a couple things to keep in mind with the player.
     - Since this is a side scroller the character actually stays in the same place on the screen. Their coordinates never change.
@@ -12,9 +14,146 @@
     - 
 
 */
-class Player{
+class Player extends Entity{
+    // basic play properties
+    // for now the cat hitbox is a square.
+    private int width = Tile.TILE_LENGTH;
+    private int height = Tile.TILE_LENGTH;
+
+    //cats
+    ArrayList<Cat> cats;
+    private int currentCat;
+
+    // the number of jumps a cat can take before touching another surface
+    private int jumps;
+
+    //is the cat immune to damange
+    private Boolean immune;
+
+    private final float normalInvMass = 0.1;
+
+
+    //offset that the position of the world is based off of
+    //public to make it "snappy" lol
+    public float offsetX;
+    public float offsetY;
+    
+
 
     /*
         Creates and draws player. On
     */
+    public Player(int posX, int posY, int moveIncrement){
+        // entity constructor. Creates particle array, force generator etc.
+        super();
+
+        //medium weight for player. not the heaviest but also not the lightest
+        invMass = normalInvMass;
+
+        this.moveIncrement = moveIncrement;
+
+        // offset = position
+        this.offsetX = posX;
+        this.offsetY = posY;
+
+        //create particles
+        // Particle(int x, int y, float xVel, float yVel, float invM
+        // create 4 particles for hit box
+        particles.add(new Particle(posX, posY, 0, 0, invMass));
+        particles.add(new Particle(posX + width, posY, 0, 0, invMass));
+        particles.add(new Particle(posX, posY + height, 0, 0, invMass));
+        particles.add(new Particle(posX + width, posY + height, 0, 0, invMass));
+
+        //create cats <3
+        cats = new ArrayList<Cat>();
+        cats.add(new Cat("Edgar", color(125), "Double Jump"));
+        cats.add(new Cat("Poe", color(190), "Super Nap"));
+        cats.add(new Cat("Alan", color(0), "Climb"));
+
+        //default cat is Edgar
+        this.currentCat = 0;
+        //Edgar has two jumps
+        this.jumps = 2;
+
+        
+    }
+
+    public void draw(){
+        PVector offset = new PVector();
+        //integrate each particle
+        for(Particle p: particles){
+            offset = p.playerIntegrate();
+        }
+        //the final vector should be the bottom right corner. We'll base it on the top left
+        //calculate offset
+        this.offsetX = offset.x - (Tile.TILE_LENGTH);
+
+        this.offsetY = offset.y - (Tile.TILE_LENGTH);
+
+        //call draw method in the cat class
+        cats.get(0).draw(particles);
+    }
+
+
+    //we will handle keyboard input here
+    public void move(char key){
+        // used Space invaders as inspiration for moving character 
+        if( key == 'a'){
+            //move left -> offsetX is affected in negative direction
+            offsetX -= moveIncrement;
+        }
+        else if (key == 'd'){
+            //move right -> offsetX is affected in positive direction
+            offsetX += moveIncrement;
+        }
+        else
+            println("How tf did you get here?");
+    }
+
+    // exerts force to begin jump
+    public void startJump(){
+
+    }
+
+    public void resetJumps(){
+
+    }
+
+    public void useAbility(){
+        // Edgar does not use the ability here because his is automatically implemented in jump amount
+        // only need to activate once
+        if(cats.get(currentCat).specialAbility == "Super Nap" && !immune){
+            //activate immunity but set mass to infinite
+            immune = Boolean.TRUE; // immune to damage while ability is active
+
+            invMass = 0; // poe is immovable because he is sleeping
+
+            //update mass of all particles
+            for(Particle p: particles){
+                p.setInvMass(invMass);
+            }
+        }
+        else if (cats.get(currentCat).specialAbility == "Climb"){
+            //work like move but changes offsetY negatively 
+            offsetY -= moveIncrement;
+
+        }
+    }
+
+    public void disableAbility(){
+        //only Poe needs to be disabled
+        if(cats.get(currentCat).specialAbility == "Super Nap" && immune){
+            //activate immunity but set mass to infinite
+            immune = Boolean.FALSE; // reset immunity
+
+            invMass = normalInvMass; // reset mass
+
+            //update mass of all particles
+            for(Particle p: particles){
+                p.setInvMass(invMass);
+            }
+        }
+    }
+
+
 }
