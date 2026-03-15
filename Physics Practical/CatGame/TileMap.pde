@@ -7,8 +7,8 @@ class TileMap {
     private int height;
     private int length;
 
-    private int lengthRange = 6;
-    private int heightRange = 5;
+    private int lengthRange;
+    private int heightRange;
 
     /*
         So there are a few different Tile types for when the tilemap is generated from a text file.

@@ -37,6 +37,10 @@ class Player extends Entity{
     //public to make it "snappy" lol
     public float offsetX;
     public float offsetY;
+
+    boolean movingRight = false;
+    boolean movingLeft = false;
+    boolean climbing = false;
     
 
 
@@ -74,11 +78,23 @@ class Player extends Entity{
         this.currentCat = 0;
         //Edgar has two jumps
         this.jumps = 2;
-
         
     }
 
-    public void draw(){
+    public void calculateOffset(){
+
+        //handle moving options
+        if(movingRight){
+            move('d');
+        }
+        else if(movingLeft){
+            move('a');
+        }
+
+        if(climbing){
+            move('w');
+        }
+
         PVector offset = new PVector();
         //integrate each particle
         for(Particle p: particles){
@@ -86,14 +102,39 @@ class Player extends Entity{
         }
         //the final vector should be the bottom right corner. We'll base it on the top left
         //calculate offset
-        this.offsetX = offset.x - (Tile.TILE_LENGTH);
+        float offsetX = offset.x - (Tile.TILE_LENGTH);
 
-        this.offsetY = offset.y - (Tile.TILE_LENGTH);
+        float offsetY = offset.y - (Tile.TILE_LENGTH);
 
+        //probably run collision detection here before actually finalizing drawing
+        //adjust offsets accordingly
+
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+
+    }
+
+    public void draw(){
         //call draw method in the cat class
         cats.get(0).draw(particles);
     }
 
+
+
+    public void setMoving(char key){
+        //this literally just flips the boolean value of the moving function
+        if( key == 'a'){
+            //move left -> offsetX is affected in negative direction
+            movingLeft = !movingLeft;
+        }
+        else if (key == 'd'){
+            //move right -> offsetX is affected in positive direction
+            movingRight = !movingRight;
+        }
+        else
+            println("How tf did you get here?");
+
+    }
 
     //we will handle keyboard input here
     public void move(char key){
@@ -105,6 +146,9 @@ class Player extends Entity{
         else if (key == 'd'){
             //move right -> offsetX is affected in positive direction
             offsetX += moveIncrement;
+        }
+        else if(key == 'w'){ // up for climb
+            offsetY -= moveIncrement;
         }
         else
             println("How tf did you get here?");
@@ -135,7 +179,10 @@ class Player extends Entity{
         }
         else if (cats.get(currentCat).specialAbility == "Climb"){
             //work like move but changes offsetY negatively 
-            offsetY -= moveIncrement;
+            // offsetY -= moveIncrement;
+
+            //set climbing
+            climbing = true;
 
         }
     }

@@ -2,8 +2,8 @@
 
  class Tile {
     // by deafult Tiles are no collide
-    protected Boolean collidable = Boolean.FALSE;
-    protected Boolean climbable = Boolean.FALSE;
+    protected boolean collidable = Boolean.FALSE;
+    protected boolean climbable = Boolean.FALSE;
 
     // // the (x,y) coordinate respresents the top left corner of a tile
     protected float posX;
