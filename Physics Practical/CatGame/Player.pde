@@ -76,9 +76,10 @@ class Player extends Entity{
 
         //create cats <3
         cats = new ArrayList<Cat>();
-        cats.add(new Cat("Edgar", color(125), "High Jump"));
-        cats.add(new Cat("Poe", color(190), "Super Nap"));
-        cats.add(new Cat("Alan", color(0), "Climb"));
+        //(String name, color col, String ability, String normalImage, String specialImage)
+        cats.add(new Cat("Edgar", color(125), "High Jump", "Edgar.png", "Edgar.png") );
+        cats.add(new Cat("Poe", color(190), "Super Nap", "Poe.png", "PoeSleep.png"));
+        cats.add(new Cat("Alan", color(0), "Climb", "Alan.png", "AlanClimbing.png"));
 
         //default cat is Edgar
         this.currentCat = 0;
@@ -213,6 +214,7 @@ class Player extends Entity{
             canClimb = true;
         }else{
             canClimb = false;
+            climbing = false;
         }
 
         if(walkingTiles > 0){
@@ -224,7 +226,13 @@ class Player extends Entity{
 
     public void draw(){
         //call draw method in the cat class
-        cats.get(currentCat).draw(particles);
+        if(climbing || immune){
+        cats.get(currentCat).draw(particles, 1, width, height);
+        }
+        else{
+            //default cat
+            cats.get(currentCat).draw(particles, 0, width, height);
+        }
     }
 
     public void setMoving(char key, boolean keyPressed){

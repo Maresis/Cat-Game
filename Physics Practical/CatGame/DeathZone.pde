@@ -12,11 +12,12 @@ class DeathZone extends Tile{
 
 
     //use super draw method
-    // public void draw(float offsetX, float offsetY){
-    //     //rect coord upper left corner x y width height
-    //     // basic drawing, will replace with assets later
-    //     //white
-    //     fill(255);
-    //     rect(this.posX + offsetX, this.posY + offsetY, Tile.tileLength, Tile.tileLength);
-    // }
+    public void draw(float offsetX, float offsetY){
+        //rect coord upper left corner x y width height
+        // basic drawing, will replace with assets later
+        //white
+        // fill(255);
+        // rect(this.posX + offsetX, this.posY + offsetY, Tile.tileLength, Tile.tileLength);
+        //draw nothing for now
+    }
 }

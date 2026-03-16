@@ -14,12 +14,12 @@ class EntitySpawn extends Tile{
     }
 
     //for now use default behavior
-    // public void draw(float offsetX, float offsetY){
-    //     //rect coord upper left corner x y width height
-    //     // basic drawing, will replace with assets later
-    //     fill(255);
-    //     rect(this.posX + offsetX, this.posY + offsetY, TILE_LENGTH, TILE_LENGTH);
-
-    //     // TODO spawn in entity if not alive, then mark alive
-    // }
+    public void draw(float offsetX, float offsetY){
+        //rect coord upper left corner x y width height
+        // basic drawing, will replace with assets later
+        //white
+        // fill(255);
+        // rect(this.posX + offsetX, this.posY + offsetY, Tile.tileLength, Tile.tileLength);
+        //draw nothing for now
+    }
 }

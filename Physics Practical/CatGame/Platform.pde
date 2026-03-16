@@ -8,14 +8,14 @@ class Platform extends Tile{
     public Platform(float posX, float posY){
         super(posX, posY);
         this.collidable = Boolean.TRUE;
+        image = loadImage("Platform.png");
     }
 
     public void draw(float posX, float posY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
         //red
-        fill(255, 0, 0);
-        rect(posX, posY, TILE_LENGTH, TILE_LENGTH);
+        image(image, posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 
 }
