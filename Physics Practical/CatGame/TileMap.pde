@@ -24,7 +24,8 @@ class TileMap {
     public TileMap(String filePath, int lengthRange, int heightRange){
         try {
             // have to use sketch path sense the levels are in the sketch folder, not the data folder
-            Scanner sc = new Scanner(new File (sketchPath(filePath)));
+            // this says it is never closed but it literally is
+            Scanner sc = new Scanner(new File (dataPath(filePath)));
             // the height and length of the map will be the first two Ints
             // check if next Int exists
             // print(sc.next());

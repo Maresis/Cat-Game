@@ -5,6 +5,7 @@ class WinZone extends Tile {
     public WinZone(float posX, float posY){
         super(posX, posY);
         this.collidable = Boolean.TRUE;
+        // What do all cats want?
         image = loadImage("FoodBowl.png");
     }
 

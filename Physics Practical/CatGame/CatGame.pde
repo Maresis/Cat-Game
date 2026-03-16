@@ -35,6 +35,7 @@ ForceRegistry forceRegistry;
 boolean gameEnded = false;
 
 void initGame(){
+    //TODO Add game states
 
     setup();
 }
@@ -78,6 +79,7 @@ void setup(){
 void draw(){
 
     //test end conditions
+    // TODO modify these screens to be more interesting and change game states
     if(player.win){
         //go to win screen
         gameEnded = true;
@@ -139,10 +141,13 @@ void draw(){
     'tab' : change cat
     'shift' : use special ability
 
+    for both key functions. When you press shift you should still be able to move left and right
+    capitalized letters have been added.
+
 */
 void keyPressed(){
-
-    if(key == 'a' || key == 'd'){
+    //could've stayed as a switch statment. Oh well.
+    if(key == 'a'|| key == 'A' || key == 'd' || key == 'D'){
        player.setMoving(key, true); 
     }
     if(key == ' '){
@@ -162,7 +167,8 @@ void keyPressed(){
 }
 
 void keyReleased(){
-    if(key == 'a' || key == 'd'){
+
+    if((key == 'a'|| key == 'A' || key == 'd' || key == 'D')){
        player.setMoving(key, false); 
     }
     if(key == CODED && keyCode == SHIFT){
@@ -171,8 +177,8 @@ void keyReleased(){
 
 }
 
-final int REST_LENGTH = 150 ;
-final float SPRING_CONSTANT = .2 ;
+// For the memories <3. Inheritence wise why the fuck would I try to handle forces enacted on an entity. Outside
+// of the entity's class? I already had force handling built in to Entity anyway. Everybody makes mistakes.
 // void jump(){
 //     //for jump we will use jumping springs that are based on anchor springs
 //     //the anchor will be the player particles

@@ -1,7 +1,9 @@
 import java.awt.Rectangle;
 
 // this class just detects collision and returns how to handle them
-
+// THIS SYSTEM CANNOT BE USED RECURSIVELY. 
+// REDESIGN IF RECURSION IS A MUST FOR FUTURE COLLISION DETECTION
+// I MARKED PROBLEM 
 class CollisionSystem{
     //rectangles literally make this so easy hehehehehehehe
     Rectangle entity;
@@ -33,7 +35,9 @@ class CollisionSystem{
             return false;
         }
     }
-    //WASD for directions
+
+    // THIS MAKES RECURSION PROBLEMATIC AS detetectionCollision should be called before this to make sure it is the
+    //correct collision. I do no checks to make sure this happens. Will add later. TODO: MAKE SAFE
     public PVector correctCollision(){
         
         // check for overlap

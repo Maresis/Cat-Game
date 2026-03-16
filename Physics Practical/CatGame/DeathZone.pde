@@ -12,6 +12,9 @@ class DeathZone extends Tile{
 
 
     //use super draw method
+    // I think I will make the death zones water in the future
+    //for now ......
+    //override default draw function because death is invisible. Ha. ha. ha. ha. ha. ha.
     public void draw(float offsetX, float offsetY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later

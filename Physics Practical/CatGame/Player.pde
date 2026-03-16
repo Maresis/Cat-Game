@@ -90,23 +90,23 @@ class Player extends Entity{
     public void calculateOffset(TileMap tileMap){
 
         //handle moving 
-        println("Moving data d a w" + movingRight + " " + movingLeft + " " + climbing);
-        if(movingRight){
+        // println("Moving data d a w" + movingRight + " " + movingLeft + " " + climbing);
+        if(movingRight && !immune){
             move('d');
         }
-        else if(movingLeft){
+        else if(movingLeft && !immune){
             move('a');
         }
 
-        if(climbing){
+        if(climbing && !immune){
             move('w');
         }
 
-        if(walking || climbing){
+        if((walking || climbing) && !jumping){
             jumping = false;
             jumpParticles.clear();
         }
-        println(walking + "" + climbing + "" + immune);
+        // println(walking + "" + climbing + "" + immune);
         //if player is walking on a platform disable gravity
         forceRegistry.setIgnoreGravity(walking || climbing || immune);
 
@@ -163,9 +163,13 @@ class Player extends Entity{
 
         PVector correction = new PVector(0,0);
 
+        // counters to help define tile base behaviors
         int walkingTiles = 0;
         int climbingTiles = 0;
+
         //handle if the cat is walking on platform or not
+        // don't know why I structured my nest for loop ike this but apparently im a psyco path who needed
+        // to check it verticly first? Fuck conventions, be the confusion you want to see in the world.
         for(int i = lowYRange; i < highYRange; i++){
             for(int j = lowXRange; j < highXRange; j++){
                 //send to collision to check
@@ -204,7 +208,6 @@ class Player extends Entity{
                                 win = true;
                             }
                         }
-
                     }
                 }
             }
@@ -219,6 +222,14 @@ class Player extends Entity{
 
         if(walkingTiles > 0){
             walking = true;
+            // if walking you shoudln't be jumping anymore. 
+            // check if velocity is positive or zero (moving down/on ground) to confirm
+            // not in calculate offset because I don't want character to jump before returning to the ground
+
+            if(jumping && particles.get(0).velocity.y >= 0){
+                jumping = false;
+                jumpParticles.clear();
+            }
         }else{
             walking = false;
         }
@@ -226,9 +237,11 @@ class Player extends Entity{
 
     public void draw(){
         //direction
+        // I love my cats
         int direction = 1;
         if( movingLeft) direction = -1;
         //call draw method in the cat class
+        // edgar does not have a special drawing because his is just high jumping
         if(climbing || immune){
         cats.get(currentCat).draw(particles, 1, width, height, direction);
         }
@@ -240,11 +253,11 @@ class Player extends Entity{
 
     public void setMoving(char key, boolean keyPressed){
         //this literally just flips the boolean value of the moving function
-        if( key == 'a'){
+        if( key == 'a' || key == 'A'){
             //move left -> offsetX is affected in negative direction
             movingLeft = keyPressed;
         }
-        else if (key == 'd'){
+        else if (key == 'd' || key == 'D'){
             //move right -> offsetX is affected in positive direction
             movingRight = keyPressed;
         }
@@ -256,7 +269,7 @@ class Player extends Entity{
     //we will handle keyboard input here
     public void move(char key){
         // used Space invaders as inspiration for moving character 
-        if( key == 'a'){
+        if( key == 'a' ){
             //move left -> offsetX is affected in negative direction
             this.tilePosX -= moveIncrement;
         }

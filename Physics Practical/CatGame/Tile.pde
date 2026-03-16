@@ -9,8 +9,8 @@
     protected float posX;
     protected float posY;
 
-    // Every tile is a 64 by 64 square
     // public for speediness
+    // 
     public static final int TILE_LENGTH = 100;
 
     protected PImage image;

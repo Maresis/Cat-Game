@@ -1,5 +1,13 @@
 // copied code from Spring in lecture material and modified it to work for this purpose
 /**
+    The main modification of this force compared to normal springs is that it only exacts the full force of the
+    spring in one frame (from a compressed spring). I did this because I felt like it was the most similar to a cat's jump
+    plus gravity naturally bring the player back down. I had to represent two particles as well due to the complexity
+    caused by offsets and the tile map system. Forces had to be applied to the player like they were moving without 
+    them moving at all.
+  */
+
+/**
  * A force generator that applies a spring force.
  */
 public final class JumpingSpring extends ForceGenerator {

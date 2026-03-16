@@ -9,7 +9,7 @@ class AirTile extends Tile{
         super(posX, posY);
     }
 
-
+    //override default draw function because air is invisible
     public void draw(float offsetX, float offsetY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later

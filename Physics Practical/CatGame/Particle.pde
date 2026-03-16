@@ -1,4 +1,5 @@
 // taken from lecture materials on physics
+// modified a bit to work with project.
 // a representation of a point mass
 final class Particle {
   
@@ -66,31 +67,10 @@ final class Particle {
     
     
     // More careful version of edge of screen impulse
+    // if nonplayer particles hit the edge of the screen they die and are handled elsewhere
+    // it is easier to test if a particles position is < 0 to check for death.
+    // player particles physically cannot reach the end of the screen
     
-    if (position.x < 0) {
-      if (velocity.x < 0)
-        velocity.x = -velocity.x ;
-      else if (velocity.x == 0)
-        velocity.x = 1 ;
-    }    
-    if (position.x > width) {
-      if (velocity.x > 0)
-        velocity.x = -velocity.x ;
-      else if (velocity.x == 0)
-        velocity.x = -1 ;
-    }
-    if (position.y < 0) {
-      if (velocity.y < 0)
-        velocity.y = -velocity.y ;
-      else if (velocity.y == 0)
-        velocity.y = 1 ;
-    }    
-    if (position.y > height) {
-      if (velocity.y > 0)
-        velocity.y = -velocity.y ;
-      else if (velocity.y == 0)
-        velocity.y = -1 ;
-    }
     
     
     // Clear accumulator
@@ -99,12 +79,14 @@ final class Particle {
   }
 
   // we have to integrate the player differently since they never actually move on the screen
+  // essentially we do all the physics math on a stand in that is used to calculate the offset.
+  // This offset is then used to move literally everything else around the character, mimicing movement.
   public PVector playerIntegrate(){
 
     // If infinite mass, we don't integrate
     if (invMass <= 0f) return position; //return positions so offset will be the same
     
-    PVector offset = new PVector(position.x, position.y); // close position Pvector so we can add velocity to it without changing the position
+    PVector offset = position.copy(); // clone position Pvector so we can add velocity to it without changing the position
     // update position
     offset.add(velocity) ;
     

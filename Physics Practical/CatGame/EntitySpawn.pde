@@ -1,5 +1,5 @@
 
-
+    //currently doesn't do anything, but it will
 class EntitySpawn extends Tile{
     // private final Boolean collidable = Boolean.FALSE;
     // private float posX;

@@ -53,6 +53,8 @@ class ForceRegistry {
     Iterator<ForceRegistration> itr = registrations.iterator() ;
     while(itr.hasNext()) {
       ForceRegistration fr = itr.next() ;
+
+      //added this to help reduce bouncing. If a player is standing on a surface gravity doesn't technically have to do anything.
       if(!ignoreGravity || !(fr.forceGenerator instanceof Gravity))
         fr.forceGenerator.updateForce(fr.particle) ;
     }
