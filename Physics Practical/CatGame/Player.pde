@@ -120,6 +120,7 @@ class Player extends Entity{
 
             //aditionally if the player is standing on a tile set the vert velocity to 0
             if(walking || climbing)
+                // climbers are not effected by gravity
                 p.velocity.set(p.velocity.x, 0);
         }
         //the final vector should be the bottom left corner. We'll base it on the top left
