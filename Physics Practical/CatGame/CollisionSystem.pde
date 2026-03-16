@@ -59,28 +59,33 @@ class CollisionSystem{
         float x; // ;)
         float y;
 
+        if(collision.getWidth() < collision.getHeight()){
         //entity left or right of tile
-        if(entity.getX() < tile.getX()){
-            //entity is to the left so move it left
-            x = -1;
-        }
-        else if(entity.getX() > tile.getX()){
-            x = 1;
-        }
-        else{
-            x = 0;
-        }
-
-        //entity below or above tile
-        if(entity.getY() < tile.getY()){
-            //above move up
-            y = -1;
-        }
-        else if (entity.getY() > tile.getY()){
-            y = 1;
-        }
-        else{
+            if(entity.getX() < tile.getX()){
+                //entity is to the left so move it left
+                x = -1;
+            }
+            else if(entity.getX() > tile.getX()){
+                x = 1;
+            }
+            else{
+                x = 0;
+            }
             y = 0;
+        }else{
+
+            //entity below or above tile
+            if(entity.getY() < tile.getY()){
+                //above move up
+                y = -1;
+            }
+            else if (entity.getY() > tile.getY()){
+                y = 1;
+            }
+            else{
+                y = 0;
+            }
+            x = 0;
         }
 
         direction.set(x, y);   

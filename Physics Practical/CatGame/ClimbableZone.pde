@@ -1,11 +1,11 @@
 
 
-class ClimbablePlatform extends Tile{
+class ClimbableZone extends Tile{
     // private final Boolean collidable = Boolean.TRUE;
     // private float posX;
     // private float posY;
 
-    public ClimbablePlatform(float posX, float posY){
+    public ClimbableZone(float posX, float posY){
         super(posX, posY);
         this.collidable = Boolean.TRUE;
         this.climbable = Boolean.TRUE;

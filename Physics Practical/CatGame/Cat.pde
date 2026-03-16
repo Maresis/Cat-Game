@@ -13,6 +13,8 @@ class Cat{
         this.name = name;
         this.c = col;
         this.specialAbility = ability;
+
+        //create pixels <3
     }
 
     public void draw(ArrayList<Particle> particles){

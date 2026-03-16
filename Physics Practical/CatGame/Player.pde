@@ -25,13 +25,10 @@ class Player extends Entity{
     private int currentCat;
     private final int numberOfCats = 3;
 
-    // the number of jumps a cat can take before touching another surface
-    private int jumps;
-
     //is the cat immune to damange
     private Boolean immune = false;
 
-    private final float normalInvMass = 0.1;
+    private final float normalInvMass = .01;
 
 
     //offset that the position of the world is based off of
@@ -42,6 +39,14 @@ class Player extends Entity{
     boolean movingRight = false;
     boolean movingLeft = false;
     boolean climbing = false;
+    boolean walking = true;
+    boolean jumping = false;
+    boolean canClimb = false;
+    boolean alive = true;
+    boolean win = false;
+
+    ArrayList<Particle> jumpParticles;
+    // jumpStart
     
     /*
         Creates and draws player. On
@@ -49,6 +54,8 @@ class Player extends Entity{
     public Player(int screenPosX, int ScreenPosY, int tilePosX, int tilePosY, int moveIncrement){
         // entity constructor. Creates particle array, force generator etc.
         super();
+
+        jumpParticles = new ArrayList<Particle>();
 
         //medium weight for player. not the heaviest but also not the lightest
         invMass = normalInvMass;
@@ -69,14 +76,13 @@ class Player extends Entity{
 
         //create cats <3
         cats = new ArrayList<Cat>();
-        cats.add(new Cat("Edgar", color(125), "Double Jump"));
+        cats.add(new Cat("Edgar", color(125), "High Jump"));
         cats.add(new Cat("Poe", color(190), "Super Nap"));
         cats.add(new Cat("Alan", color(0), "Climb"));
 
         //default cat is Edgar
         this.currentCat = 0;
         //Edgar has two jumps
-        this.jumps = 2;
         
     }
 
@@ -95,10 +101,25 @@ class Player extends Entity{
             move('w');
         }
 
+        if(walking || climbing){
+            jumping = false;
+            jumpParticles.clear();
+        }
+        println(walking + "" + climbing + "" + immune);
+        //if player is walking on a platform disable gravity
+        forceRegistry.setIgnoreGravity(walking || climbing || immune);
+
+        //update forces on object
+        update();
+
         PVector offset = new PVector();
         //integrate each particle
         for(Particle p: particles){
             offset = p.playerIntegrate();
+
+            //aditionally if the player is standing on a tile set the vert velocity to 0
+            if(walking || climbing)
+                p.velocity.set(p.velocity.x, 0);
         }
         //the final vector should be the bottom left corner. We'll base it on the top left
         //calculate offset
@@ -110,6 +131,12 @@ class Player extends Entity{
         //the new tile position is this new position - the starting position + the tileposition
         this.tilePosX += (newPosX - startPosX);
         this.tilePosY += (newPosY - startPosY);
+
+        //update jumpParticles
+        for(Particle p: jumpParticles){
+            p.position.x -= (newPosX - startPosX);
+            p.position.y -= (newPosY - startPosY);
+        }
 
          //probably run collision detection here before actually finalizing drawing
         //adjust offsets accordingly
@@ -134,6 +161,10 @@ class Player extends Entity{
         if(highYRange > tileMap.getHeight()) highYRange = tileMap.getHeight();
 
         PVector correction = new PVector(0,0);
+
+        int walkingTiles = 0;
+        int climbingTiles = 0;
+        //handle if the cat is walking on platform or not
         for(int i = lowYRange; i < highYRange; i++){
             for(int j = lowXRange; j < highXRange; j++){
                 //send to collision to check
@@ -141,13 +172,53 @@ class Player extends Entity{
                 if(testCollision.detectCollision(new PVector(tilePosX, tilePosY), width, height, new PVector(j * Tile.TILE_LENGTH, i * Tile.TILE_LENGTH), Tile.TILE_LENGTH, Tile.TILE_LENGTH)){
                     //found collision. Handle it.
                     // if collidable
-                    if(tileMap.getTile(j, i).isCollidable()){
-                        correction = testCollision.correctCollision();
-                        tilePosX += correction.x;
-                        tilePosY += correction.y;
+                    Tile currentTile = tileMap.getTile(j, i);
+                    if(currentTile.isCollidable()){
+                        if(currentTile instanceof ClimbableZone){
+                            climbingTiles++;
+                        }else{
+
+                            //for walkable tile i.e platform and climbing platform
+                            correction = testCollision.correctCollision();
+                            tilePosX += correction.x;
+                            tilePosY += correction.y;
+
+                            if(correction.y < 0){
+                                walkingTiles++;
+                            }
+
+                            //also zero velocity so that thinks don't clip though tiles because they are moving at super sonic speed
+                            for(Particle p: particles){
+                                //only zero velocity in direction of collision so that the cats don't stick to walls
+                                if(correction.x != 0)
+                                    p.velocity.x = 0;
+                                else if(correction.y != 0)
+                                    p.velocity.y = 0;
+                            }
+
+                            if(currentTile instanceof DeathZone){
+                                alive = false;
+                            }
+                            if(currentTile instanceof WinZone){
+                                win = true;
+                            }
+                        }
+
                     }
                 }
             }
+        }
+
+        if(climbingTiles > 0){
+            canClimb = true;
+        }else{
+            canClimb = false;
+        }
+
+        if(walkingTiles > 0){
+            walking = true;
+        }else{
+            walking = false;
         }
     }
 
@@ -155,8 +226,6 @@ class Player extends Entity{
         //call draw method in the cat class
         cats.get(currentCat).draw(particles);
     }
-
-
 
     public void setMoving(char key, boolean keyPressed){
         //this literally just flips the boolean value of the moving function
@@ -192,8 +261,30 @@ class Player extends Entity{
     }
 
     // exerts force to begin jump
-    public void startJump(){
+    //we can mess with these numbers to adjust jump
 
+    // ~ from lecture material
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    private final int REST_LENGTH = 1000 ;
+    private final float SPRING_CONSTANT = 1.7 ;
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private PVector jOffset = new PVector(0, 20);
+    public void startJump(){
+        if(!jumping){
+            jumping = true;
+            float jumpOffset = 1;
+            if(cats.get(currentCat).specialAbility == "High Jump")
+                jumpOffset = 1.25;
+            //force exerted is a jumpingSpring. each particle gets there own
+            walking = false;
+            for(Particle p: particles){
+                // JumpingSpring(PVector anchor, float k, float l0)
+
+                jumpParticles.add(new Particle((int) (p.position.x + jOffset.x), (int)(p.position.y + jOffset.y), 0, 0, 0.1));
+                forceRegistry.add(p, new JumpingSpring(jumpParticles.get(jumpParticles.size() - 1), SPRING_CONSTANT, REST_LENGTH * jumpOffset));
+            }
+        }
     }
 
     public void resetJumps(){
@@ -218,8 +309,9 @@ class Player extends Entity{
             //work like move but changes offsetY negatively 
             // offsetY -= moveIncrement;
 
-            //set climbing
-            climbing = true;
+            //set climbing if they can climb
+            if(canClimb)
+                climbing = true;
 
         }
     }
@@ -245,13 +337,6 @@ class Player extends Entity{
         currentCat++;
         if(currentCat >= numberOfCats){
             currentCat = 0;
-        }
-
-        if(cats.get(currentCat).specialAbility == "Double Jump"){
-            jumps = 2;
-        }
-        else{
-            jumps = 1;
         }
         
     }

@@ -78,7 +78,7 @@ class TileMap {
                         this.tileMap[length][height] = new Platform(posX, posY);
                         break;
                     case 2:
-                        this.tileMap[length][height] = new ClimbablePlatform(posX, posY);
+                        this.tileMap[length][height] = new ClimbableZone(posX, posY);
                         break;
                     case 3:
                         this.tileMap[length][height] = new DeathZone(posX, posY);

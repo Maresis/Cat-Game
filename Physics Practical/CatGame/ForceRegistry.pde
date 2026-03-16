@@ -4,7 +4,7 @@ import java.util.Iterator ;
  * Holds all the force generators and the particles they apply to
  */
 class ForceRegistry {
-  
+  boolean ignoreGravity = false;
   /**
    * Keeps track of one force generator and the particle
    *  it applies to.
@@ -53,7 +53,12 @@ class ForceRegistry {
     Iterator<ForceRegistration> itr = registrations.iterator() ;
     while(itr.hasNext()) {
       ForceRegistration fr = itr.next() ;
-      fr.forceGenerator.updateForce(fr.particle) ;
+      if(!ignoreGravity || !(fr.forceGenerator instanceof Gravity))
+        fr.forceGenerator.updateForce(fr.particle) ;
     }
+  }
+
+  void setIgnoreGravity(boolean ignore){
+    this.ignoreGravity = ignore;
   }
 }

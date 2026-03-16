@@ -31,6 +31,10 @@ final class Particle {
     forceAccumulator.add(force) ;
   }
 
+  void removeForce(PVector force){
+    forceAccumulator.sub(force) ; 
+  }
+
   // change invMass. Used to make Poe immovable while using special ability.
   void setInvMass(float invMass){
     this.invMass = invMass;
@@ -115,6 +119,10 @@ final class Particle {
     // velocity.mult(DAMPING) ;
 
     //so basically we return offset because using this we can calculate the offset based on the set position of the Particles
+    // Clear accumulator
+    forceAccumulator.x = 0 ;
+    forceAccumulator.y = 0 ;  
+    
     return offset;
   }
 }

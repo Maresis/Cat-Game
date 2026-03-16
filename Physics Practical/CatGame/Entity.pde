@@ -6,7 +6,8 @@ import java.util.Arrays;
 class Entity{
     // Particle array to represent the particles that make up an Entity
     // all entities have hit boxes. If these hit boxes collide with something do something
-    protected ArrayList<Particle> particles;
+    // have to be public so I can add forces to them the other way
+    public ArrayList<Particle> particles;
 
     protected ForceRegistry forceRegistry;
 
@@ -55,7 +56,6 @@ class Entity{
             forceRegistry.add(p, fg);
         }
     }
-
 
 
 }
