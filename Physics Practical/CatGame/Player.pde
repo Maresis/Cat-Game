@@ -23,12 +23,13 @@ class Player extends Entity{
     //cats
     ArrayList<Cat> cats;
     private int currentCat;
+    private final int numberOfCats = 3;
 
     // the number of jumps a cat can take before touching another surface
     private int jumps;
 
     //is the cat immune to damange
-    private Boolean immune;
+    private Boolean immune = false;
 
     private final float normalInvMass = 0.1;
 
@@ -42,8 +43,6 @@ class Player extends Entity{
     boolean movingLeft = false;
     boolean climbing = false;
     
-
-
     /*
         Creates and draws player. On
     */
@@ -65,8 +64,8 @@ class Player extends Entity{
         // create 4 particles for hit box
         particles.add(new Particle(screenPosX, ScreenPosY, 0, 0, invMass));
         particles.add(new Particle(screenPosX + width, ScreenPosY, 0, 0, invMass));
-        particles.add(new Particle(screenPosX, ScreenPosY + height, 0, 0, invMass));
         particles.add(new Particle(screenPosX + width, ScreenPosY + height, 0, 0, invMass));
+        particles.add(new Particle(screenPosX, ScreenPosY + height, 0, 0, invMass));
 
         //create cats <3
         cats = new ArrayList<Cat>();
@@ -81,7 +80,7 @@ class Player extends Entity{
         
     }
 
-    public void calculateOffset(){
+    public void calculateOffset(TileMap tileMap){
 
         //handle moving 
         println("Moving data d a w" + movingRight + " " + movingLeft + " " + climbing);
@@ -101,25 +100,57 @@ class Player extends Entity{
         for(Particle p: particles){
             offset = p.playerIntegrate();
         }
-        //the final vector should be the bottom right corner. We'll base it on the top left
+        //the final vector should be the bottom left corner. We'll base it on the top left
         //calculate offset
         // where it moved from start pos
-        float newPosX = offset.x - (Tile.TILE_LENGTH);
+        float newPosX = offset.x;
 
         float newPosY = offset.y - (Tile.TILE_LENGTH);
-
-        //probably run collision detection here before actually finalizing drawing
-        //adjust offsets accordingly
         
         //the new tile position is this new position - the starting position + the tileposition
         this.tilePosX += (newPosX - startPosX);
         this.tilePosY += (newPosY - startPosY);
 
+         //probably run collision detection here before actually finalizing drawing
+        //adjust offsets accordingly
+        //first find all the tiles that 
+        handleCollisions(tileMap);
+
+
+    }
+
+    private findCollisions(TileMap tileMap){
+        //define range for efficency
+        //taken from draw method of TileMap
+        int lowXRange = floor(tilePosX/Tile.TILE_LENGTH) - (Tile.lengthRange/2);
+        int highXRange = ceil(tilePosX/Tile.TILE_LENGTH + (Tile.lengthRange/2));
+
+        int lowYRange = floor((tilePosY/Tile.TILE_LENGTH) - (Tile.heightRange/2));
+        int highYRange = ceil((tilePosY/Tile.TILE_LENGTH) + (Tile.heightRange/2));
+
+        if(lowXRange < 0) lowXRange = 0;
+        if(lowYRange < 0) lowYRange = 0;
+        if(highXRange > length) highXRange = length;
+        if(highYRange > height) highYRange = height;
+
+        PVector correction = new PVector(0,0);
+        for(int i = lowYRange; i < highYRange; i++){
+            for(int j = lowXRange; j < highXRange; j++){
+                //send to collision to check
+                //detectCollision(PVector entityWA, float entityWidth, float entityHeight, PVector tileWA, float tileWidth, float tileHeight)
+                if(testCollision.detectCollision(new PVector(tilePosX, tilePosY), width, height, new PVector(j * Tile.TILE_LENGTH, i * Tile.TILE_LENGTH), Tile.TILE_LENGTH, Tile.TILE_LENGTH)){
+                    //found collision. Handle it.
+                    correction = testCollision.correctCollision();
+                    tilePosX += correction.x;
+                    tilePosY += correction.y;
+                }
+            }
+        }
     }
 
     public void draw(){
         //call draw method in the cat class
-        cats.get(0).draw(particles);
+        cats.get(currentCat).draw(particles);
     }
 
 
@@ -202,7 +233,24 @@ class Player extends Entity{
             for(Particle p: particles){
                 p.setInvMass(invMass);
             }
+        }else if(cats.get(currentCat).specialAbility == "Climb"){
+            climbing = false;
         }
+    }
+
+    public void switchCats(){
+        currentCat++;
+        if(currentCat >= numberOfCats){
+            currentCat = 0;
+        }
+
+        if(cats.get(currentCat).specialAbility == "Double Jump"){
+            jumps = 2;
+        }
+        else{
+            jumps = 1;
+        }
+        
     }
 
 

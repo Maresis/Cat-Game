@@ -11,7 +11,7 @@
 
     // Every tile is a 64 by 64 square
     // public for speediness
-    public static final int TILE_LENGTH = 64;
+    public static final int TILE_LENGTH = 100;
 
     public Tile(float posX, float posY){
         this.posX = posX;

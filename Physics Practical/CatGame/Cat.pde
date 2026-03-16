@@ -16,6 +16,7 @@ class Cat{
     }
 
     public void draw(ArrayList<Particle> particles){
+        println(name);
         fill(c);
 
         beginShape();

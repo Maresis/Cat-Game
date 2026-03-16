@@ -10,6 +10,9 @@ class Entity{
 
     protected ForceRegistry forceRegistry;
 
+    // collisions <3
+    protected CollisionSystem testCollision;
+
     // different between entities
     // might be redundant but we will keep for now
     protected int moveIncrement;
@@ -22,6 +25,7 @@ class Entity{
     public Entity(){
         forceRegistry = new ForceRegistry();
         particles = new ArrayList<Particle>();
+        testCollision = new CollisionSystem();
     }
 
     public void draw(){

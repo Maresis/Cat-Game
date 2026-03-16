@@ -6,12 +6,11 @@ TileMap tileMap;
 
 final int tileLength = Tile.TILE_LENGTH;
 
+final int screenWidth = 800;
+final int screenHeight = 600;
 //defines the range around the player that 
-final int tileLengthRange = 6;
-final int tileHeightRange = 5;
-
-final int screenWidth = tileLengthRange * tileLength;
-final int screenHeight = tileHeightRange * tileLength;;
+final int tileLengthRange = screenWidth/tileLength + 2;
+final int tileHeightRange = screenHeight/tileLength + 2;
 
 //increment
 final int PLAYER_MOVE_PROPORTION = tileLength;
@@ -21,7 +20,7 @@ ArrayList<Level> levels = new ArrayList<Level>();
 int currentLevel = 0; //default value
 
 //starting position will always be the same
-final int startPosX = screenWidth/2;
+final int startPosX = screenWidth/2 - tileLength/2;
 final int startPosY = screenHeight/2;
 
 float tilePosX;
@@ -107,6 +106,7 @@ void keyPressed(){
             // player.startJump();
             break;
         case TAB:
+            player.switchCats();
             break;
         case CODED:
             if(keyCode == SHIFT ){

@@ -7,8 +7,8 @@ class TileMap {
     private int height;
     private int length;
 
-    private int lengthRange;
-    private int heightRange;
+    public int lengthRange;
+    public int heightRange;
 
     /*
         So there are a few different Tile types for when the tilemap is generated from a text file.
@@ -117,14 +117,14 @@ class TileMap {
         //lets define the range
         // with the character in the center the range of "sight" should be 5 tiles tall and 6 tiles wide
 
-        println(tileX);
+        // println(tileX);
         // the length range will be the x offset / tileLength rounded down on the low end this x offset / tileLength + (tileLength * length) rounded up on the high end
         int lowXRange = floor(tileX/Tile.TILE_LENGTH) - (lengthRange/2);
         int highXRange = ceil(tileX/Tile.TILE_LENGTH + (lengthRange/2));
 
         // Height is defined similarly
         // these can accidentally round above or below limit make sure they dont
-        println(tileY);
+        // println(tileY);
         int lowYRange = floor((tileY/Tile.TILE_LENGTH) - (heightRange/2));
         int highYRange = ceil((tileY/Tile.TILE_LENGTH) + (heightRange/2));
 
@@ -133,8 +133,8 @@ class TileMap {
         if(highXRange > length) highXRange = length;
         if(highYRange > height) highYRange = height;
 
-        println("X [" + lowXRange + "," + highXRange + "  Y [" + lowYRange + "," + highYRange );
-        println("Offset x y "+ offsetX, offsetY);
+        // println("X [" + lowXRange + "," + highXRange + "  Y [" + lowYRange + "," + highYRange );
+        // println("Offset x y "+ offsetX, offsetY);
 
         
         for(int i = lowYRange; i < highYRange; i++){
