@@ -225,13 +225,16 @@ class Player extends Entity{
     }
 
     public void draw(){
+        //direction
+        int direction = 1;
+        if( movingLeft) direction = -1;
         //call draw method in the cat class
         if(climbing || immune){
-        cats.get(currentCat).draw(particles, 1, width, height);
+        cats.get(currentCat).draw(particles, 1, width, height, direction);
         }
         else{
             //default cat
-            cats.get(currentCat).draw(particles, 0, width, height);
+            cats.get(currentCat).draw(particles, 0, width, height, direction);
         }
     }
 
@@ -312,6 +315,10 @@ class Player extends Entity{
             for(Particle p: particles){
                 p.setInvMass(invMass);
             }
+
+            //stop moving
+            movingLeft = false;
+            movingRight = false;
         }
         else if (cats.get(currentCat).specialAbility == "Climb"){
             //work like move but changes offsetY negatively 

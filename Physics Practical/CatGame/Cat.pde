@@ -42,12 +42,13 @@ class Cat{
         //create pixels <3
     }
 
-    public void draw(ArrayList<Particle> particles, int image, int width, int height){
-        
+    public void draw(ArrayList<Particle> particles, int image, int width, int height, int direction){
         //what image do we draw?
         switch(image){
             case 0:
+            //ill figure out direction later
                 //defaultImage  
+                // scale(direction, 1); // scale from https://discourse.processing.org/t/flip-the-image-horizontally/25165/2
                 image(defaultImage, particles.get(0).position.x, particles.get(0).position.y, width, height);  
                 break;
             case 1:

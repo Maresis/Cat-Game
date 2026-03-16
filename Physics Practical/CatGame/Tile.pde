@@ -14,6 +14,8 @@
     public static final int TILE_LENGTH = 100;
 
     protected PImage image;
+    //save on mem hopefully
+    protected PImage platformImage = loadImage("Platform.png");
 
     public Tile(float posX, float posY){
         this.posX = posX;

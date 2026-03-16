@@ -15,7 +15,7 @@ class Platform extends Tile{
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
         //red
-        image(image, posX, posY, TILE_LENGTH, TILE_LENGTH);
+        image(platformImage, posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 
 }

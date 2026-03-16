@@ -8,7 +8,7 @@ class WinZone extends Tile {
         image = loadImage("FoodBowl.png");
     }
 
-    public void draw(float offsetX, float offsetY){
+    public void draw(float posX, float posY){
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
         //green
