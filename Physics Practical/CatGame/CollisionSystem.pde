@@ -10,7 +10,7 @@ class CollisionSystem{
 
 
     PVector correction;
-    PVector direcction;
+    PVector direction;
     
     //
     public CollisionSystem(){
@@ -20,7 +20,7 @@ class CollisionSystem{
         //default value
         correction = new PVector(0, 0);
         direction = new PVector(0, 0);
-        this.correction.
+
     }
     public boolean detectCollision(PVector entityWA, float entityWidth, float entityHeight, PVector tileWA, float tileWidth, float tileHeight){
         // topleftx toplefty width height
@@ -28,7 +28,7 @@ class CollisionSystem{
         tile.setRect(tileWA.x, tileWA.y, tileWidth, tileHeight);
 
         if(entity.intersects(tile)){
-            return true
+            return true;
         }else{
             return false;
         }
@@ -39,7 +39,7 @@ class CollisionSystem{
         // check for overlap
         if(entity.intersects(tile)){
             // get collision
-            collision = entity.createIntersection(tile);
+            collision = entity.intersection(tile);
         }
         else{
             //return (0,0) vector. no correction needed
@@ -50,7 +50,7 @@ class CollisionSystem{
         determineDirection();
 
         //set correction
-        correction.set(collision.getWidth() * direction.x, collision.getLength() * direction.y);
+        correction.set((float)(collision.getWidth() * direction.x), (float)(collision.getHeight() * direction.y));
 
         return correction;
     }
@@ -60,21 +60,27 @@ class CollisionSystem{
         float y;
 
         //entity left or right of tile
-        if(entity.getX() <= tile.getX()){
+        if(entity.getX() < tile.getX()){
             //entity is to the left so move it left
             x = -1;
         }
-        else{
+        else if(entity.getX() > tile.getX()){
             x = 1;
+        }
+        else{
+            x = 0;
         }
 
         //entity below or above tile
-        if(entity.getY() <= tile.getY()){
+        if(entity.getY() < tile.getY()){
             //above move up
-            y = -1
+            y = -1;
+        }
+        else if (entity.getY() > tile.getY()){
+            y = 1;
         }
         else{
-            y = 1;
+            y = 0;
         }
 
         direction.set(x, y);   

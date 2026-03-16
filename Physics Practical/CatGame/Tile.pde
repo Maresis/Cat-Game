@@ -25,6 +25,10 @@
         rect(posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 
+    public boolean isCollidable(){
+        return collidable;
+    }
+
     // take a nonstatic entity as input and checks if it is in the static tile
     // abstract Boolean checkObjectCollsion(NonstaticObject obj);
 }

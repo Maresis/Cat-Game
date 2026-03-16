@@ -41,11 +41,19 @@ void setup(){
     //for level 1 the player starts at tile[5][7]
     levels.add(new Level("level1.txt", 4 * tileLength, 6 * tileLength));
 
+    //create Gravity from lecture materials
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //Create a gravitational force
+    Gravity gravity = new Gravity(new PVector(0f, .1f)) ;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //copy ends
+
     //create tileMap
     tileMap = new TileMap(levels.get(currentLevel).levelFile, tileLengthRange, tileHeightRange);
     //create player
     // public Player(int posX, int posY, int moveIncrement){
     player = new Player(startPosX, startPosY, levels.get(currentLevel).startPosX, levels.get(currentLevel).startPosY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player.addForce(gravity);
 
     //set offset
     tilePosX = player.tilePosX;
@@ -65,7 +73,7 @@ void draw(){
 
     //calculate offset of the player character
     //this fuction essentially figures out the new offset based on the physics applied to the player and the movement by the user
-    player.calculateOffset();
+    player.calculateOffset(tileMap);
 
     tilePosX = player.tilePosX;
     tilePosY = player.tilePosY;

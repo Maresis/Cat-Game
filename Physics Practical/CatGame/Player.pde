@@ -119,19 +119,19 @@ class Player extends Entity{
 
     }
 
-    private findCollisions(TileMap tileMap){
+    private void handleCollisions(TileMap tileMap){
         //define range for efficency
         //taken from draw method of TileMap
-        int lowXRange = floor(tilePosX/Tile.TILE_LENGTH) - (Tile.lengthRange/2);
-        int highXRange = ceil(tilePosX/Tile.TILE_LENGTH + (Tile.lengthRange/2));
+        int lowXRange = floor((tilePosX/Tile.TILE_LENGTH) - (tileMap.getLengthRange()/2));
+        int highXRange = ceil(tilePosX/Tile.TILE_LENGTH + (tileMap.getLengthRange()/2));
 
-        int lowYRange = floor((tilePosY/Tile.TILE_LENGTH) - (Tile.heightRange/2));
-        int highYRange = ceil((tilePosY/Tile.TILE_LENGTH) + (Tile.heightRange/2));
+        int lowYRange = floor((tilePosY/Tile.TILE_LENGTH) - (tileMap.getHeightRange()/2));
+        int highYRange = ceil((tilePosY/Tile.TILE_LENGTH) + (tileMap.getHeightRange()/2));
 
         if(lowXRange < 0) lowXRange = 0;
         if(lowYRange < 0) lowYRange = 0;
-        if(highXRange > length) highXRange = length;
-        if(highYRange > height) highYRange = height;
+        if(highXRange > tileMap.getLength()) highXRange = tileMap.getLength();
+        if(highYRange > tileMap.getHeight()) highYRange = tileMap.getHeight();
 
         PVector correction = new PVector(0,0);
         for(int i = lowYRange; i < highYRange; i++){
@@ -140,9 +140,12 @@ class Player extends Entity{
                 //detectCollision(PVector entityWA, float entityWidth, float entityHeight, PVector tileWA, float tileWidth, float tileHeight)
                 if(testCollision.detectCollision(new PVector(tilePosX, tilePosY), width, height, new PVector(j * Tile.TILE_LENGTH, i * Tile.TILE_LENGTH), Tile.TILE_LENGTH, Tile.TILE_LENGTH)){
                     //found collision. Handle it.
-                    correction = testCollision.correctCollision();
-                    tilePosX += correction.x;
-                    tilePosY += correction.y;
+                    // if collidable
+                    if(tileMap.getTile(j, i).isCollidable()){
+                        correction = testCollision.correctCollision();
+                        tilePosX += correction.x;
+                        tilePosY += correction.y;
+                    }
                 }
             }
         }
