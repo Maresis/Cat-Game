@@ -22,6 +22,11 @@
         this.posY = posY;
     }
 
+    public int getSpawnType(){
+        //default no type
+        return -1;
+    }
+
     //lets completely disregard the position of the tile. That is just for finding what tiles to print
     public void draw(float posX, float posY){
         // tiles by default are White

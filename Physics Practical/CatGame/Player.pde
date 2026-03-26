@@ -17,8 +17,7 @@ import java.util.ArrayList;
 class Player extends Entity{
     // basic play properties
     // for now the cat hitbox is a square.
-    private int width = Tile.TILE_LENGTH;
-    private int height = Tile.TILE_LENGTH;
+    // use default
 
     //cats
     ArrayList<Cat> cats;
@@ -27,8 +26,6 @@ class Player extends Entity{
 
     //is the cat immune to damange
     private Boolean immune = false;
-
-    private final float normalInvMass = .01;
 
 
     //offset that the position of the world is based off of
@@ -65,6 +62,10 @@ class Player extends Entity{
         // offset = position
         this.tilePosX = tilePosX;
         this.tilePosY = tilePosY;
+
+        //set spawn position
+        spawnX = screenPosX;
+        spawnY = ScreenPosY;
 
         //create particles
         // Particle(int x, int y, float xVel, float yVel, float invM
@@ -236,7 +237,7 @@ class Player extends Entity{
         }
     }
 
-    public void draw(){
+    public int draw(){
         //direction
         // I love my cats
         int direction = 1;
@@ -250,6 +251,8 @@ class Player extends Entity{
             //default cat
             cats.get(currentCat).draw(particles, 0, width, height, direction);
         }
+
+        return 0;
     }
 
     public void setMoving(char key, boolean keyPressed){
@@ -368,6 +371,18 @@ class Player extends Entity{
             currentCat = 0;
         }
         
+    }
+
+    public float getTilePosX(){
+        return tilePosX;
+    }
+
+    public float getTilePosY(){
+        return tilePosY;
+    }
+
+    public void kill(){
+        alive = false;
     }
 
 

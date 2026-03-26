@@ -4,13 +4,17 @@ class EntitySpawn extends Tile{
     // private final Boolean collidable = Boolean.FALSE;
     // private float posX;
     // private float posY;
+    private int spawnType;
 
-    private Boolean alive;
-    
-
+    // private Boolean alive;
 
     public EntitySpawn(float posX, float posY, int type){
         super(posX, posY);
+        this.spawnType = type;
+    }
+
+    public int getSpawnType(){
+        return spawnType;
     }
 
     //for now use default behavior

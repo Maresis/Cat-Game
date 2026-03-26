@@ -21,7 +21,25 @@ class Entity{
     protected float invMass;
 
     //just to track entities affects. If a player entity and a hostile entity collide the player dies.
-    protected Boolean hostile = Boolean.FALSE;
+    protected boolean hostile = false;
+
+    protected int spawnX;
+
+    protected int spawnY;
+
+    protected boolean onScreen;
+
+    protected boolean alive = true;
+
+    protected int type = 0;
+
+    //default width and height
+    protected int width = Tile.TILE_LENGTH;
+    protected int height = Tile.TILE_LENGTH;
+
+    //default invmass
+    protected final float normalInvMass = .01;
+
 
     public Entity(){
         forceRegistry = new ForceRegistry();
@@ -29,17 +47,17 @@ class Entity{
         testCollision = new CollisionSystem();
     }
 
-    public void draw(){
+    public int draw(float offsetX, float offsetY){
         //by deafult entities will just be represented by a shape of thier particles position
         fill(0);
         beginShape();
             for(Particle p: particles){
                 p.integrate();
                 // position is a PVector in particle
-                vertex(p.position.x, p.position.y);
+                vertex(p.position.x - offsetX, p.position.y - offsetY);
             }
         endShape(CLOSE);
-
+        return 0;
     }
 
     public void update(){
@@ -57,5 +75,36 @@ class Entity{
         }
     }
 
+    public int getType(){
+        return type;
+    }
+
+    public boolean onScreen( float tilePosX, float tilePosY){
+        //determine if the entity is on the screen in it hasn't been on screen before
+        if(alive && !onScreen){
+            // set ranges for x
+            int lowXRange = floor(tilePosX/Tile.TILE_LENGTH) - (tileLengthRange/2);
+            int highXRange = ceil(tilePosX/Tile.TILE_LENGTH + (tileLengthRange/2));
+
+            //set ranges for y
+            int lowYRange = floor((tilePosY/Tile.TILE_LENGTH) - (tileHeightRange/2));
+            int highYRange = ceil((tilePosY/Tile.TILE_LENGTH) + (tileHeightRange/2));
+
+            for(int x = lowXRange; x < highXRange; x++){
+                for(int y = lowYRange; y < highYRange; y++){
+                    if((x ==spawnX ) && (y == spawnY)){
+                        print("You made it to the onscreen function");
+                        this.onScreen = true; //the entitiy is on screen
+
+                        break;
+                    }
+
+                }
+            }
+        }
+        return onScreen;
+    }
+
 
 }
+

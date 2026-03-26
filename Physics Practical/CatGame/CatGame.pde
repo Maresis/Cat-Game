@@ -62,6 +62,21 @@ void setup(){
 
     //create tileMap
     tileMap = new TileMap(levels.get(currentLevel).levelFile, tileLengthRange, tileHeightRange);
+
+    //spawn entities
+    for(int x = 0; x < tileMap.getLength(); x++){
+        for(int y = 0; y < tileMap.getHeight(); y++){
+            //check if entity spawn tile
+            Tile t = tileMap.getTile(x, y);
+            if((t instanceof EntitySpawn ) && (t.getSpawnType() > 0)){
+                //spawn enemy
+
+                print("Spawning enemy (" + x +"," + y + ") Type: " + t.getSpawnType());
+                entities.add(new Enemy(x, y, t.getSpawnType()));
+            }
+        }
+    }
+
     //create player
     // public Player(int posX, int posY, int moveIncrement){
     player = new Player(startPosX, startPosY, levels.get(currentLevel).startPosX, levels.get(currentLevel).startPosY, screenWidth/PLAYER_MOVE_PROPORTION);
@@ -119,6 +134,17 @@ void draw(){
         // for(Particle p: jumpParticles){
         //     p.position.set(p.position.x - offsetX, p.position.y - offsetY);
         // }
+        // determine if entities are onscreen
+        for(Entity e:entities){
+            if(e.getType() > 0){//check if on screen if so then draw entity
+                if(e.onScreen(tilePosX, tilePosY)){
+                    if(e.draw(offsetX, offsetY, tileMap, player) > 0){
+                        //just kill the player
+                        player.kill();
+                    }
+                }
+            }
+        }
 
         forceRegistry.updateForces();
         
