@@ -36,7 +36,12 @@ boolean gameEnded = false;
 
 void initGame(){
     //TODO Add game states
-
+    for(Entity e: entities){
+        e.alive = false;
+        e.onScreen = false;
+    }
+    entities.clear();
+    player.alive = true;
     setup();
 }
 
@@ -138,10 +143,7 @@ void draw(){
         for(Entity e:entities){
             if(e.getType() > 0){//check if on screen if so then draw entity
                 if(e.onScreen(tilePosX, tilePosY)){
-                    if(e.draw(offsetX, offsetY, tileMap, player) > 0){
-                        //just kill the player
-                        player.kill();
-                    }
+                    e.draw(offsetX, offsetY);
                 }
             }
         }

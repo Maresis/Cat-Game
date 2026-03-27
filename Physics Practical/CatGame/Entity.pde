@@ -47,7 +47,7 @@ class Entity{
         testCollision = new CollisionSystem();
     }
 
-    public int draw(float offsetX, float offsetY){
+    public void draw(float offsetX, float offsetY){
         //by deafult entities will just be represented by a shape of thier particles position
         fill(0);
         beginShape();
@@ -57,7 +57,6 @@ class Entity{
                 vertex(p.position.x - offsetX, p.position.y - offsetY);
             }
         endShape(CLOSE);
-        return 0;
     }
 
     public void update(){
