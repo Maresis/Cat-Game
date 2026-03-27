@@ -234,25 +234,26 @@ class Enemy extends Entity{
         }
 
         //test other entitites
-        for(Entity e: entities){
-            if(testCollision.detectCollision(particles.get(0).position, width, height, e.particles.get(0).position, e.width, e.height)){
-                PVector correction = testCollision.correctCollision();
-                        
-                //fix the position of each particle
-                for(Particle p: particles){
-                    p.position.x += correction.x;
-                    p.position.y += correction.y;
-                }
+        //for now no. seperation behavior should cover this
+        // for(Entity e: entities){
+        //     if(testCollision.detectCollision(particles.get(0).position, width, height, e.particles.get(0).position, e.width, e.height)){
+        //         PVector correction = testCollision.correctCollision();
+        //         //  
+        //         //fix the position of each particle
+        //         for(Particle p: particles){
+        //             p.position.x += correction.x;
+        //             p.position.y += correction.y;
+        //         }
 
-                for(Particle p: particles){
-                    //only zero velocity in direction of collision so that the cats don't stick to walls
-                    if(correction.x != 0)
-                        p.velocity.x = 0;
-                    else if(correction.y != 0)
-                        p.velocity.y = 0;
-                }
-            }
-        }
+        //         for(Particle p: particles){
+        //             //only zero velocity in direction of collision so that the cats don't stick to walls
+        //             if(correction.x != 0)
+        //                 p.velocity.x = 0;
+        //             else if(correction.y != 0)
+        //                 p.velocity.y = 0;
+        //         }
+        //     }
+        // }
 
 
     }
@@ -316,7 +317,8 @@ class Enemy extends Entity{
         //for now we won't do anything with orientation but later
 
         //reset acceleration
-        acceleration.mult(0);
+        // done in seperate
+        // acceleration.mult(0);
     }
 
     private void flee(){
@@ -327,6 +329,8 @@ class Enemy extends Entity{
         steering.limit(maxForce);
 
         acceleration.add(steering);
+
+        //done in seperate
         velocity.add(acceleration);
         velocity.limit(speed);
         //may have to change this we will see
@@ -335,9 +339,10 @@ class Enemy extends Entity{
             //after an entity is spawned it moved independently of the tileMap
             p.position.add(velocity);
 
-            //reset acceleration
-            acceleration.mult(0);
         }
+        //reset acceleration
+        //removed because this is done in seperate behavior
+        // acceleration.mult(0);
     }
 
     // code copied and further developed from lecture material
@@ -347,7 +352,7 @@ class Enemy extends Entity{
         int neighborCount = 0;
 
         for(Entity e : entities){
-            if( e != this){
+            if( e != this && !(e instanceof Player)){
                 float distance = PVector.dist(this.particles.get(0).position, e.particles.get(0).position);
                 if( distance < Tile.TILE_LENGTH && distance > 0){
                     PVector fleeDirection = PVector.sub(this.particles.get(0).position, e.particles.get(0).position);
@@ -359,8 +364,6 @@ class Enemy extends Entity{
             }
         }
 
-        //reset acceleration
-        acceleration.mult(0);
         if(neighborCount > 0){
             seperationForce.div((float) neighborCount);
             seperationForce.setMag(speed);

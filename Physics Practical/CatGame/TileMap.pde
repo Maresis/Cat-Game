@@ -286,6 +286,17 @@ class TileMap {
         for(int x = lowX; x <= highX; x++){
             for(int y = lowY; y <= highY; y++){
                 if(!(x == tile.x && y == tile.y)){
+                    //corner cutting check. Cannot add a diagonal block if it is not accessible
+                    // diagona from origin
+                    boolean isDiagonal = (x != tile.x && y != tile.y);
+                    if(isDiagonal){
+                        //if there is a a collible tile adjecent, can't go diagonal
+                        Tile sideX = getTile(x, tile.y);
+                        Tile sideY = getTile(tile.x, y);
+                        if((sideX != null && sideX.collidable) || (sideY != null && sideY.collidable)){
+                            continue;
+                        }
+                    }
                     //add tile to list
                     neighbors.add(getTile(x,y));
                 }
