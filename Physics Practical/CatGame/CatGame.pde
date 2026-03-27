@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Stack;
 
 Player player;
 ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -54,7 +55,7 @@ void setup(){
 
     //later we will create a way of deriving the starting position from the tilemap
     //for level 1 the player starts at tile[5][7]
-    levels.add(new Level("level1.txt", 4 * tileLength, 6 * tileLength));
+    levels.add(new Level("level1.txt"));
 
     forceRegistry = new ForceRegistry();
 
@@ -67,6 +68,7 @@ void setup(){
 
     //create tileMap
     tileMap = new TileMap(levels.get(currentLevel).levelFile, tileLengthRange, tileHeightRange);
+    // high key we can store the start position in the constuctor
 
     //spawn entities
     for(int x = 0; x < tileMap.getLength(); x++){
@@ -84,7 +86,7 @@ void setup(){
 
     //create player
     // public Player(int posX, int posY, int moveIncrement){
-    player = new Player(startPosX, startPosY, levels.get(currentLevel).startPosX, levels.get(currentLevel).startPosY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, screenWidth/PLAYER_MOVE_PROPORTION);
     player.addForce(gravity);
 
     //set offset

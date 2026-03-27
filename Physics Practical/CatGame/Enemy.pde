@@ -15,6 +15,8 @@ class Enemy extends Entity{
 
     PImage leftGhost;
     PImage rightGhost;
+
+    
     public Enemy(int spawnx, int spawny, int type){
         super();
         this.spawnX = spawnx;
@@ -40,6 +42,9 @@ class Enemy extends Entity{
             case 1:
                 // print("created ghost");
                 //ghost cats are the same size as cats so use default
+                //ghosts are slightly smaller than casts
+                width *= 0.8;
+                height *= 0.8;
 
                 //mass should be way lighter than a cat so the inverse mass should be much larger
                 invMass *= 10;
@@ -48,6 +53,7 @@ class Enemy extends Entity{
                 // this speed is actually set differently than the player moves so we will have to fidget wit hit a bit
 
                 speed = 3;
+
 
                 //lets add gravity to the ghost just to test
                 //set behavior
@@ -107,8 +113,8 @@ class Enemy extends Entity{
             }
 
             if(offScreen(offsetX, offsetY)){
-                    state = EnemyState.DEAD;
-                }
+                state = EnemyState.DEAD;
+            }
         }
 
         //we'll do collisions here but we want to test forces first
@@ -152,16 +158,24 @@ class Enemy extends Entity{
         seperateBehavior();
     }
 
+    private int offScreenFrames = 0;
     private boolean offScreen(float offsetX, float offsetY){
         boolean offScreen = true;
         for(Particle p: particles){
-            if(p.position.x * width - offsetX < 0 && p.position.y * height - offsetY < 0){} // do nothing in all cases
-            if(p.position.x * width - offsetX < screenWidth && p.position.y * height - offsetY > screenHeight){}
-            if(p.position.x * width - offsetX < screenWidth && p.position.y * height - offsetY < 0){}
-            if(p.position.x * width - offsetX < 0 && p.position.y * height - offsetY > screenHeight){}
-            else offScreen = false; // false if ever on the screen
+            float px = p.position.x - offsetX;
+            float py = p.position.y - offsetY;
+            if((px >=0) && (px < screenWidth) && (py >= 0) && (py < screenHeight))
+                offScreen = false; // false if ever on the screen
         }
-        return offScreen;
+        
+        if(offScreen){
+            offScreenFrames++;
+        }
+        else{
+            offScreenFrames = 0;
+        }
+
+        return offScreenFrames >= frameRate * 5; // after 5 seconds being off screen entities disappear
     }
 
     private void handleCollisions(float playerTileX, float playerTileY){
@@ -186,22 +200,25 @@ class Enemy extends Entity{
 
                     if(currentTile.isCollidable()){
                         PVector correction = testCollision.correctCollision();
-                        
-                        //fix the position of each particle
-                        for(Particle p: particles){
-                            p.position.x += correction.x;
-                            p.position.y += correction.y;
-                        }
-                    
 
-                        //also zero velocity so that thinks don't clip though tiles because they are moving at super sonic speed
-                        for(Particle p: particles){
-                            //only zero velocity in direction of collision so that the cats don't stick to walls
-                            if(correction.x != 0)
-                                p.velocity.x = 0;
-                            else if(correction.y != 0)
-                                p.velocity.y = 0;
-                        }
+                        //ghost should be able to collide a bit more with tiles. lets say like a 1/10 of a tile is chill
+                        // if(type == 1 && ((correction.x < Tile.TILE_LENGTH * 0.1 && correction.x != 0) || (correction.y * 0.1 < Tile.TILE_LENGTH && correction.y != 0))){
+                        //    //do nothing
+                        // }else{
+                            //fix the position of each particle
+                            for(Particle p: particles){
+                                p.position.x += correction.x;
+                                p.position.y += correction.y;
+                            }
+                            //also zero velocity so that thinks don't clip though tiles because they are moving at super sonic speed
+                            for(Particle p: particles){
+                                //only zero velocity in direction of collision so that the cats don't stick to walls
+                                if(correction.x != 0)
+                                    p.velocity.x = 0;
+                                else if(correction.y != 0)
+                                    p.velocity.y = 0;
+                            }
+                    // }
                 }
                 }
             }
@@ -240,15 +257,54 @@ class Enemy extends Entity{
 
     }
 
+    Stack<PathNode> path = new Stack<PathNode>();
+    int pathUpdateTimer = 0; //how many frames since last path update
+    static final int PATH_UPDATE_INTERVAL = 30; // every 30 frames
     private void chasePlayer(){
+
+        //lets add pathfinding behavior
+        //update path timer
+        pathUpdateTimer++;
+        if(pathUpdateTimer>= PATH_UPDATE_INTERVAL || path.isEmpty()){
+            pathUpdateTimer = 0;
+            path = tileMap.findPath((int)(particles.get(0).position.x / Tile.TILE_LENGTH), (int)(particles.get(0).position.y / Tile.TILE_LENGTH), (int)(player.tilePosX / Tile.TILE_LENGTH), (int)(player.tilePosY / Tile.TILE_LENGTH), (particles.get(0).position.x / Tile.TILE_LENGTH), (particles.get(0).position.y / Tile.TILE_LENGTH));
+        }
         //inspired from steering lecture material
         // the target position is the player's position
-        PVector desiredVelocity = PVector.sub(new PVector(player.tilePosX,player.tilePosY) , particles.get(0).position);
-        desiredVelocity.setMag(speed);
-        PVector steering = PVector.sub(desiredVelocity, velocity);
-        steering.limit(maxForce);
+        
+        if(path.isEmpty()){
+            PVector desiredVelocity = PVector.sub(new PVector(player.tilePosX,player.tilePosY) , particles.get(0).position);
+            desiredVelocity.setMag(speed);
+            PVector steering = PVector.sub(desiredVelocity, velocity);
+            steering.limit(maxForce);
 
-        acceleration.add(steering);
+            acceleration.add(steering);
+        }
+        else{
+            //steer toward center of path tile
+            PathNode node = path.peek();
+            //set goal point where the ghost is going towards
+            PVector goal = new PVector(node.x * Tile.TILE_LENGTH, node.y * Tile.TILE_LENGTH);
+
+            //move to next point on path if entity is close enough
+            // if the distance is within half a tile
+            if(PVector.dist(particles.get(0).position, goal) < Tile.TILE_LENGTH * 0.5){
+                path.pop();
+            }
+
+            PVector desiredVelocity = PVector.sub(goal, particles.get(0).position);
+            desiredVelocity.setMag(speed);
+            PVector steering = PVector.sub(desiredVelocity, velocity);
+            steering.limit(maxForce);
+
+            acceleration.add(steering);
+        }
+
+
+
+
+
+        //this behavior does not change for either pathing situation so after conditional
         velocity.add(acceleration);
         velocity.limit(speed);
         //may have to change this we will see

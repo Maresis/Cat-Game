@@ -15,14 +15,9 @@ class Level{
     public int startPosX;
     public int startPosY;
 
-    public Level(String file, int startPosX, int startPosY){
+    public Level(String file){
         this.levelFile = file;
         
-        // this.sightRangeX = rangeX;
-        // this.sightRangeY = rangeY;
-
-        this.startPosX = startPosX;
-        this.startPosY = startPosY;
     }
 
 }
