@@ -253,6 +253,11 @@ class TileMap {
                     if(nodeInList(closed, node)){
                         continue;
                     }
+                    //also if there is an entity in the node
+                    if(entityInNode(t, sX, sY)){
+                        continue;
+                    }
+
 
                     //otherwise add successor to open list
                     open.add(node);
@@ -311,7 +316,7 @@ class TileMap {
     private boolean nodeInList(ArrayList<PathNode> pathList, PathNode node){
         for(PathNode p: pathList){
             // same coordinates and lo
-            if(p.x == node.x && p.y == node.y && p.f < node.f){
+            if(p.x == node.x && p.y == node.y && p.f <= node.f){
                 //no need to add node to list
                 return true;
             }
@@ -331,6 +336,19 @@ class TileMap {
         //im actually going to skip adding the start node because the
         // entity is already there
         return path;
+    }
+
+    protected CollisionSystem testCollision = new CollisionSystem();
+    private boolean entityInNode(Tile t, float startX, float startY){
+        for(Entity e:entities){
+            if(!(e.particles.get(0).position.x /Tile.TILE_LENGTH == startX && e.particles.get(0).position.y/ Tile.TILE_LENGTH == startY)){
+                //not the start entitiy
+                if(testCollision.detectCollision(e.particles.get(0).position, e.width, e.height, new PVector(t.posX, t.posY), Tile.TILE_LENGTH, Tile.TILE_LENGTH)){
+                    return true;
+                }
+            }
+        }
+         return false;
     }
 
 }

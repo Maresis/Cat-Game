@@ -285,10 +285,12 @@ class Enemy extends Entity{
             //steer toward center of path tile
             PathNode node = path.peek();
             //set goal point where the ghost is going towards
-            PVector goal = new PVector(node.x * Tile.TILE_LENGTH, node.y * Tile.TILE_LENGTH);
+            // goal should as close to the middle as possible based on width and height
+            PVector goal = new PVector(node.x * Tile.TILE_LENGTH + (Tile.TILE_LENGTH - width), node.y * Tile.TILE_LENGTH + (Tile.TILE_LENGTH - height));
 
             //move to next point on path if entity is close enough
-            // if the distance is within half a tile
+            // if the distance is within a fourth a tile
+            // changing this distance makes the ghosts follow the path more closely
             if(PVector.dist(particles.get(0).position, goal) < Tile.TILE_LENGTH * 0.5){
                 path.pop();
             }

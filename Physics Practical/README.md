@@ -38,6 +38,21 @@ These instructions work under the assumption that you already have Processing in
     Tab   : Change Cats
     Shift : Use Special Ability
 
+### Guide
+
+    The premise of this game is fairly simple: Get to the food. Of course no journey is without it's challenges. 
+    How to Play:
+
+    1. To move. simply presse the 'a' and 'd' keys. 'a' for left, 'd' for right. You can also jump onto a higher platform using the space bar.
+        - Tip if the jump is too high. Switch to    Edgar using TAB (dark gray cat). His is able to jump  twice as high as the others
+    
+    2. Climbing. When you are met with a wall that is too tall to jump over, there may be a scratching post right next to it. Switch to Alan (black) using TAB to climb the wall by pressing SHIFT to use his special ability.
+
+    3. Ghosts: These are currently the only enemies in the game, but be careful. If you are touched by a ghost, you die! To avoid this press TAB to switch to Poe (light gray) and activate his super nap ability by pressing the SHIFT key. When his a ability is activated the ghosts will go look for other prey. Just make sure that they have left for long enough before continuing your journey.
+
+    That's it! Now it's time to make your way through the level and find your dinner.
+    
+
 
 ### Requirements
 
