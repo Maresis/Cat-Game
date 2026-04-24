@@ -4,6 +4,7 @@ import java.util.Stack;
 Player player;
 ArrayList<Entity> entities = new ArrayList<Entity>();
 TileMap tileMap;
+LevelGenerator levelGenerator;
 
 final int tileLength = Tile.TILE_LENGTH;
 
@@ -22,7 +23,7 @@ int currentLevel = 0; //default value
 
 //starting position will always be the same
 final int startPosX = screenWidth/2 - tileLength/2;
-final int startPosY = screenHeight/2;
+final int startPosY = screenHeight/2 - int(1.0/6.0 * screenHeight);
 
 float tilePosX;
 float tilePosY;
@@ -35,27 +36,22 @@ ForceRegistry forceRegistry;
 
 boolean gameEnded = false;
 
-void initGame(){
-    //TODO Add game states
-    for(Entity e: entities){
-        e.alive = false;
-        e.onScreen = false;
-    }
-    entities.clear();
-    player.alive = true;
-    setup();
-}
-
 void settings(){
     size(screenWidth, screenHeight);
 }
 
 void setup(){
+
+    // String level = "level1.txt";
+    // noLoop();
+    levelGenerator = new LevelGenerator(10);
+    String level = levelGenerator.generateLevel(100, 56);
+
     //I'll add level choosing later but for now no
 
     //later we will create a way of deriving the starting position from the tilemap
     //for level 1 the player starts at tile[5][7]
-    levels.add(new Level("level1.txt"));
+    levels.add(new Level(level));
 
     forceRegistry = new ForceRegistry();
 
@@ -86,6 +82,7 @@ void setup(){
 
     //create player
     // public Player(int posX, int posY, int moveIncrement){
+    println(tileMap.playerStartX+ " " + tileMap.playerStartY);
     player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, screenWidth/PLAYER_MOVE_PROPORTION);
     player.addForce(gravity);
 
@@ -96,6 +93,36 @@ void setup(){
     offsetX = tilePosX - startPosX;
     offsetY = tilePosY - startPosY;
 
+}
+
+void initGame(){
+    entities.clear();
+    gameEnded = false;
+
+    forceRegistry = new ForceRegistry();
+    Gravity gravity = new Gravity(new PVector(0f, 1f));
+
+    //respawn entities
+    for(int x = 0; x < tileMap.getLength(); x++){
+        for(int y = 0; y < tileMap.getHeight(); y++){
+            //check if entity spawn tile
+            Tile t = tileMap.getTile(x, y);
+            if((t instanceof EntitySpawn ) && (t.getSpawnType() > 0)){
+                //spawn enemy
+
+                print("Spawning enemy (" + x +"," + y + ") Type: " + t.getSpawnType());
+                entities.add(new Enemy(x, y, t.getSpawnType()));
+            }
+        }
+    }
+    // recreate player at spawn
+    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player.addForce(gravity);
+
+    tilePosX = player.tilePosX;
+    tilePosY = player.tilePosY;
+    offsetX = tilePosX - startPosX;
+    offsetY = tilePosY - startPosY;
 }
 
 void draw(){

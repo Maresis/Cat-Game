@@ -61,6 +61,6 @@ class ForceRegistry {
   }
 
   void setIgnoreGravity(boolean ignore){
-    this.ignoreGravity = ignore;
+    // this.ignoreGravity = ignore;
   }
 }

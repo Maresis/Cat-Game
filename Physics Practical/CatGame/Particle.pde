@@ -82,9 +82,6 @@ final class Particle {
   // essentially we do all the physics math on a stand in that is used to calculate the offset.
   // This offset is then used to move literally everything else around the character, mimicing movement.
   public PVector playerIntegrate(){
-
-    // If infinite mass, we don't integrate
-    if (invMass <= 0f) return position; //return positions so offset will be the same
     
     PVector offset = position.copy(); // clone position Pvector so we can add velocity to it without changing the position
     // update position
@@ -104,6 +101,9 @@ final class Particle {
     // Clear accumulator
     forceAccumulator.x = 0 ;
     forceAccumulator.y = 0 ;  
+
+    // If infinite mass, we don't integrate
+    if (invMass <= 0f) return position; //return positions so offset will be the same
     
     return offset;
   }

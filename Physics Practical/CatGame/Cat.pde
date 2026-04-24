@@ -6,7 +6,7 @@ class Cat{
 
     //useful code for images that I used to help
     //https://stackoverflow.com/questions/9344370/load-multiple-images-in-processing
-    /*
+/*
     PImage a;
     Pimage b;
 
@@ -21,9 +21,10 @@ class Cat{
     void draw(){
     image(a,random(300),random(300),a.width/2, a.height/2);
     image(b,random(300),random(300),b.width/2, b.height/2);
-}
+    }
+    
     also https://processing.org/reference/image_.html
-     */
+*/
     private PImage defaultImage;
     private PImage abilityImage;
 

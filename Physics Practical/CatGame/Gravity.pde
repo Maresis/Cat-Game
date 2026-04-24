@@ -21,6 +21,7 @@ public final class Gravity extends ForceGenerator {
   //  massive.
   void updateForce(Particle particle) {
     //should check for infinite mass
+    if(particle.invMass <= 0) return;
     //apply mass-scaled force to the particle
     PVector resultingForce = gravity.get() ;
     resultingForce.mult(particle.getMass()) ;

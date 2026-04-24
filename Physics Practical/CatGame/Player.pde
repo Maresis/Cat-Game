@@ -120,7 +120,7 @@ class Player extends Entity{
             offset = p.playerIntegrate();
 
             //aditionally if the player is standing on a tile set the vert velocity to 0
-            if(walking || climbing)
+            if((walking || climbing) && !jumping)
                 // climbers are not effected by gravity
                 p.velocity.set(p.velocity.x, 0);
         }
@@ -199,7 +199,7 @@ class Player extends Entity{
                                 //only zero velocity in direction of collision so that the cats don't stick to walls
                                 if(correction.x != 0)
                                     p.velocity.x = 0;
-                                else if(correction.y != 0)
+                                else if(!jumping || (correction.y != 0 && p.velocity.y >= 0))
                                     p.velocity.y = 0;
                             }
 
