@@ -6,16 +6,30 @@ ArrayList<Entity> entities = new ArrayList<Entity>();
 TileMap tileMap;
 LevelGenerator levelGenerator;
 
+enum GameState {MENU, GENERATE, PLAYING, LOADING};
+GameState gameState;
+
+//DEFAULT GENERATION VALUES
+int MAX_GEN_X = 256;
+int MAX_GEN_Y = 256;
+int MAX_DIFFICULTY = 5;
+
+int genSizeX = 32;
+int genSizeY = 32;
+// default is easy
+int difficulty = 1;
+
+
 final int tileLength = Tile.TILE_LENGTH;
 
-final int screenWidth = 800;
-final int screenHeight = 600;
+final int screenWidth = 1280;
+final int screenHeight = 720;
 //defines the range around the player that 
 final int tileLengthRange = screenWidth/tileLength + 2;
 final int tileHeightRange = screenHeight/tileLength + 2;
 
 //increment
-final int PLAYER_MOVE_PROPORTION = tileLength;
+final int PLAYER_MOVE_PROPORTION = int(tileLength * (1.0 / 13));
 
 //set up levels
 ArrayList<Level> levels = new ArrayList<Level>();
@@ -23,7 +37,7 @@ int currentLevel = 0; //default value
 
 //starting position will always be the same
 final int startPosX = screenWidth/2 - tileLength/2;
-final int startPosY = screenHeight/2 - int(1.0/6.0 * screenHeight);
+final int startPosY = screenHeight/2 - int(screenHeight/8.0);
 
 float tilePosX;
 float tilePosY;
@@ -40,17 +54,17 @@ void settings(){
     size(screenWidth, screenHeight);
 }
 
+//start the game in menu
 void setup(){
+    levelGenerator = new LevelGenerator(MAX_DIFFICULTY);
+    gameState = GameState.MENU;
 
-    // String level = "level1.txt";
-    // noLoop();
-    levelGenerator = new LevelGenerator(10);
-    String level = levelGenerator.generateLevel(100, 56);
+}
 
-    //I'll add level choosing later but for now no
+void startGame(String level){
 
-    //later we will create a way of deriving the starting position from the tilemap
-    //for level 1 the player starts at tile[5][7]
+    levels.clear();//I have not set up level selection so...
+
     levels.add(new Level(level));
 
     forceRegistry = new ForceRegistry();
@@ -83,7 +97,7 @@ void setup(){
     //create player
     // public Player(int posX, int posY, int moveIncrement){
     println(tileMap.playerStartX+ " " + tileMap.playerStartY);
-    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, PLAYER_MOVE_PROPORTION);
     player.addForce(gravity);
 
     //set offset
@@ -92,6 +106,8 @@ void setup(){
 
     offsetX = tilePosX - startPosX;
     offsetY = tilePosY - startPosY;
+
+    gameState = GameState.PLAYING;
 
 }
 
@@ -116,7 +132,7 @@ void initGame(){
         }
     }
     // recreate player at spawn
-    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, screenWidth/PLAYER_MOVE_PROPORTION);
+    player = new Player(startPosX, startPosY, tileMap.playerStartX, tileMap.playerStartY, PLAYER_MOVE_PROPORTION);
     player.addForce(gravity);
 
     tilePosX = player.tilePosX;
@@ -126,6 +142,67 @@ void initGame(){
 }
 
 void draw(){
+    if(gameState == GameState.MENU) drawMenu();
+    else if(gameState == GameState.GENERATE) drawGenerate();
+    else if(gameState == GameState.PLAYING) drawGame();
+    else drawLoad();
+}
+
+void drawMenu(){
+    background(30);
+    textAlign(CENTER);
+
+    fill(255);
+    textSize(48);
+    text("Cat Game", screenWidth/2, screenHeight/3);
+    fill(255);
+    textSize(28);
+    text("1 - Play Previous Level", screenWidth/2, screenHeight/2);
+    text("2 - Generate New Level",  screenWidth/2, screenHeight/2 + 50);
+
+}
+
+void drawLoad(){
+    background(30);
+    textAlign(CENTER);
+
+    fill(255);
+    textSize(48);
+    text("LOADING", screenWidth/2, screenHeight/2);
+}
+
+
+int genOption = 0; // 0 width, 1 height, 2 difficulty
+void drawGenerate(){
+    background(30);
+    textAlign(CENTER);
+
+    //title
+    fill(255);
+    textSize(36);
+    text("Generate Level", screenWidth/2, screenHeight/4); //nearer to top
+
+    //three generation options width, height, difficulty
+    String[] labels = {"Width: " + genSizeX, "Height: " + genSizeY, "Difficulty: " + difficulty};
+    
+    // 3 optio
+    for(int i = 0; i < 3; i++){
+        // selected option will be yellow
+        fill(i == genOption ? color(255, 255, 0): color(255));
+        textSize(26);
+
+        //arrows are also around the selected object
+        text((i == genOption ? " <" : "  ") + labels[i] + (i == genOption ? "> " : "  "), screenWidth/2, screenHeight/2 + i*50 - 50);
+
+    }
+
+    fill(160);
+    textSize(18);
+    text("UP/DOWN: select   LEFT/RIGHT: change   ENTER: generate   BACKSPACE: back", screenWidth/2, screenHeight*3/4);
+
+}
+
+void drawGame(){
 
     //test end conditions
     // TODO modify these screens to be more interesting and change game states
@@ -134,14 +211,14 @@ void draw(){
         gameEnded = true;
         background(0, 255, 0);
         textSize(32);
-        text("You Win! Press Enter to Restart", screenWidth / 2 - 200, screenHeight / 2);
+        text("You Win! Press Enter to Restart\nOr Press Backspace to Return to Menu", screenWidth / 2, screenHeight / 2);
         fill(255);
     }
     else if(!player.alive){
         //go to lose screen
         background(0);
         textSize(32);
-        text("Loser! Press Enter to Restart", screenWidth / 2 - 200, screenHeight / 2);
+        text("Loser! Press Enter to Restart\nOr Press Backspace to Return to Menu", screenWidth / 2, screenHeight / 2);
         fill(255);
         gameEnded = true;
     }
@@ -169,6 +246,12 @@ void draw(){
         //     p.position.set(p.position.x - offsetX, p.position.y - offsetY);
         // }
         // determine if entities are onscreen
+
+        forceRegistry.updateForces();
+        
+        //draw tilemap before anything else
+        tileMap.draw(offsetX, offsetY, tilePosX, tilePosY);
+
         for(Entity e:entities){
             if(e.getType() > 0){//check if on screen if so then draw entity
                 if(e.onScreen(tilePosX, tilePosY)){
@@ -176,11 +259,6 @@ void draw(){
                 }
             }
         }
-
-        forceRegistry.updateForces();
-        
-        //draw tilemap before anything else
-        tileMap.draw(offsetX, offsetY, tilePosX, tilePosY);
 
         //draw player character
         player.draw();
@@ -203,27 +281,76 @@ void draw(){
 
 */
 void keyPressed(){
-    //could've stayed as a switch statment. Oh well.
-    if(key == 'a'|| key == 'A' || key == 'd' || key == 'D'){
-       player.setMoving(key, true); 
-    }
-    if(key == ' '){
-        player.startJump();
+    if(gameState == GameState.MENU){
+        if (key == '1'){ 
+            gameState = GameState.LOADING;
+            startGame("generatedLevel.txt");
+        }
+        else if(key == '2') gameState = GameState.GENERATE;
+    }else if (gameState == GameState.GENERATE){
 
-    }
-    if(key == TAB){
-        player.switchCats();
-    }
-    if(key == ENTER && gameEnded){
-        initGame();
-    }
-    if(key == CODED && keyCode == SHIFT){
-        player.useAbility();
-    }
+        if(key == CODED){
+            if(keyCode == DOWN){
+                genOption = (genOption + 1 > 2) ? 0 : genOption + 1;
 
+            }
+            else if(keyCode == UP){
+                genOption = (genOption - 1 < 0) ? 2 : genOption - 1;
+            }
+
+            if(keyCode == RIGHT){
+                if(genOption == 0){
+                    genSizeX = (genSizeX * 2 > MAX_GEN_X) ? (MAX_GEN_X/8) : genSizeX * 2;
+                }else if(genOption == 1){
+                    genSizeY = (genSizeY * 2 > MAX_GEN_Y) ? (MAX_GEN_Y/8) : genSizeY * 2;
+                }else{
+                    difficulty = (difficulty + 1 > MAX_DIFFICULTY) ? 1 : difficulty + 1;
+                }
+            }
+            else if(keyCode == LEFT){
+                if(genOption == 0){
+                    genSizeX = (genSizeX / 2 < (MAX_GEN_X/8)) ? (MAX_GEN_X) : genSizeX / 2;
+                }else if(genOption == 1){
+                    genSizeY = (genSizeY / 2 < (MAX_GEN_Y/8)) ? (MAX_GEN_Y) : genSizeY / 2;
+                }else{
+                    difficulty = (difficulty - 1 < 1) ? MAX_DIFFICULTY : difficulty - 1;
+                }
+            }
+        }
+        else if(key == ENTER){
+            gameState = GameState.LOADING;
+            startGame(levelGenerator.generateLevel(genSizeX, genSizeY, difficulty));
+        }else if( key == BACKSPACE){
+            gameState = GameState.MENU;
+        }
+
+    }else{//could've stayed as a switch statment. Oh well.
+        if(key == 'a'|| key == 'A' || key == 'd' || key == 'D'){
+        player.setMoving(key, true); 
+        }
+        if(key == ' '){
+            player.startJump();
+
+        }
+        if(key == TAB){
+            player.switchCats();
+        }
+        if(key == ENTER && gameEnded){
+            initGame();
+        }
+        if(key == BACKSPACE && gameEnded){
+            gameEnded = false;
+            gameState= GameState.MENU;
+        }
+        if(key == CODED && keyCode == SHIFT){
+            player.useAbility();
+        }
+    }
 }
 
 void keyReleased(){
+
+    if(gameState != GameState.PLAYING) return;
 
     if((key == 'a'|| key == 'A' || key == 'd' || key == 'D')){
        player.setMoving(key, false); 

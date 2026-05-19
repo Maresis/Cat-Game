@@ -33,11 +33,6 @@ class Enemy extends Entity{
         leftGhost = loadImage("GhostLeft.png");
         rightGhost = loadImage("GhostRight.png");
 
-        //cannon stats
-        int shots = 5;
-        int lastshot = 0; //millis where last shot happened
-        int shotinterval = 4000; // intervast in milliseconds between shots
-        
         switch(type){
             case 1:
                 // print("created ghost");
@@ -198,7 +193,7 @@ class Enemy extends Entity{
                 if(testCollision.detectCollision(new PVector(particles.get(0).position.x, particles.get(0).position.y), width, height, new PVector(x * Tile.TILE_LENGTH, y * Tile.TILE_LENGTH), Tile.TILE_LENGTH, Tile.TILE_LENGTH)){
                     Tile currentTile = tileMap.getTile(x, y);
 
-                    if(currentTile.isCollidable()){
+                    if(currentTile instanceof Platform){
                         PVector correction = testCollision.correctCollision();
 
                         //ghost should be able to collide a bit more with tiles. lets say like a 1/10 of a tile is chill

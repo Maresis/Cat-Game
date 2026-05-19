@@ -16,6 +16,11 @@ class ClimbableZone extends Tile{
         //rect coord upper left corner x y width height
         // basic drawing, will replace with assets later
         //not red but different color than everything else
-        image(image, posX, posY, TILE_LENGTH, TILE_LENGTH);
+
+        //this can be a memory nightmare ;(
+        // image(image, posX, posY, TILE_LENGTH, TILE_LENGTH);
+
+        fill(255, 255, 0);
+        rect(posX, posY, TILE_LENGTH, TILE_LENGTH);
     }
 }

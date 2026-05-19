@@ -79,6 +79,8 @@ class TileMap {
                 posY = Tile.TILE_LENGTH * height;
                 switch(type){
                     case 0:
+                    case 6: // player space and potential enenmy space
+                    case 7:// potential enemy space
                         //create Air tile 
                         this.tileMap[length][height] = new AirTile(posX, posY);
                         break;

@@ -90,6 +90,15 @@ class Player extends Entity{
 
     public void calculateOffset(TileMap tileMap){
 
+
+        // climbing source of truth. If jumping overide other forces so it isn't fucked up
+        if(climbing){
+            jumping = false;
+            jumpParticles.clear();
+            for(Particle p: particles){
+                p.velocity.set(0, 0);
+            }
+        }
         //handle moving 
         // println("Moving data d a w" + movingRight + " " + movingLeft + " " + climbing);
         if(movingRight && !immune){
@@ -366,6 +375,7 @@ class Player extends Entity{
     }
 
     public void switchCats(){
+        disableAbility();
         currentCat++;
         if(currentCat >= numberOfCats){
             currentCat = 0;
