@@ -1,1 +1,76 @@
 # Videogames
+Cat Game - I Miss My Cats - Player's Guide
+=========
+
+Welcome to my terribly named game. This game is a 2D Platformer that explores the world of the indoor cat. The goal of the game is to reach the goal of all cats, which is of course eating more food. Those greedy bastards.
+
+In the game you play as three cats that you can switch between like Zelda/Sheik in Super Smash Brothers Brawl. Ther cats are as follows:
+
+ - **Poe**: The antisocial and dramatic cuddlebug of the group. Poe usually perfers to be alone and take long naps in the sun. Don't tell anyone that he would never turn down a cuddle sesh. It would ruin his "hard" reputation.
+   - Special Ability: **Super Naps** ~ When used Poe falls asleep and becomes an immoveable object in time and space. He is also immune to all damage in this state.
+- **Edgar**: The hypersocial, funky uncle of the trio. I know he's a bit weird but I promise he grows on you. His favorite thing is nibbling on the fingers of strangers and looking down on people.
+    - Special Ability: **High Jump** ~ Edgar has weirdly long legs and as a result is able to jump twice as high as the other cats! Gotta get above people somehow!
+- **Alan**: The psychotic, energetic, attention-loving baby of the group. Much to the groups disapproval, Alan likes to take his energy out on the other boys. He also likes to get on surfaces by jumping the least amount physically possible. His preferred method is to neurotically claw his way up structures like he is trying the claw his way out of the pits of Hell where he likely came from.
+    - Special Ability: **Climbing** ~ Alan can climb on climbable surfaces (currently only the tan cat scratcher/rope surfaces). Alan is the only cat that is able to climb and I am starting to think that is by choice.
+
+The game is simple. You win when you reach the food bowl. Happy Hunting!
+
+**Note** - The game sometimes takes a little bit to load. After selecting an option to start the game, just wait until the map appears. 
+
+### Setup Instructions
+These instructions work under the assumption that you already have Processing installed on your system. If you do not, follow [this link](https://processing.org/download?processing).
+
+1. Download the CatGame Folder. You must have all the contents of this folder on your system to player the game. Do not only download CatGame.pde.
+
+2. Open Processing IDE.
+
+3. In Processing: Navigate to File -> Open...
+    - find the CatGame folder in your file system and open CatGame.pde.
+
+4. Press the run button in the top left corner.
+
+5. If there are memory issues as a result of the assets. Navigate to File -> Preferences... -> Sketches -> Increase Memory Amount
+    - You may also want to do this if you are experiencing framerate drops.
+
+
+### Controls
+
+    'a'   : Move left
+    'd'   : Move right
+    Space : Jump
+    Tab   : Change Cats
+    Shift : Use Special Ability
+
+### Level Generation
+
+As the player you can choose to generate a new level and the options for that are below:
+
+You can choose:
+- **Width**: From the range of `{32, 64, 128, 256}`. 
+- **Height**: Same as width
+- **Difficulty**: One a scale from `1` (easiest) to `5` (hardest). The more difficult the level, the more enemies spawn and the more difficult jumps will be so be careful!.
+
+After you make your selections just press `ENTER` and wait. The game can sometimes take a minute to load so sit back and wait for your custom level to appear.
+
+### Guide
+
+    The premise of this game is fairly simple: Get to the food. Of course no journey is without it's challenges. 
+    How to Play:
+
+    1. To move. simply presse the 'a' and 'd' keys. 'a' for left, 'd' for right. You can also jump onto a higher platform using the space bar.
+        - Tip if the jump is too high. Switch to    Edgar using TAB (dark gray cat). His is able to jump  twice as high as the others
+    
+    2. Climbing. When you are met with a platform that is too high to jump to, there may be a scratching post (pillar of yellow blocks) right next to it. Switch to Alan (black) using TAB to climb the wall by pressing SHIFT to use his special ability.
+
+    3. Ghosts: These are currently the only enemies in the game, but be careful. If you are touched by a ghost, you die! To avoid this press TAB to switch to Poe (light gray) and activate his super nap ability by pressing the SHIFT key. When his a ability is activated the ghosts will go look for other prey. Just make sure that they have left for long enough before continuing your journey.
+
+    *WARNING*: You must activate a cat's special ability after switch cats if you switched cats while using an ability. You cannot just hold the special ability button and hope for the best.
+
+    That's it! Now it's time to make your way through the level and find your dinner.
+    
+
+
+### Requirements
+
+ - [Processing](https://processing.org/download?processing) installed on computer.
+
